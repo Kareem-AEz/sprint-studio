@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id    String @id @default(cuid())
+  name  String
+  email String @unique
+  // TODO: In production, add a password field and use a hashing algorithm to store the password
+
+  activities TaskActivity[]
+
+  // 1. One-to-many relation: User creates tasks
+  createdTasks  Task[] @relation("TaskCreator")
+  // 2. Many-to-many relation: Tasks this user is working on
+  assignedTasks Task[] @relation("TaskAssignees")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// -------------- CATEGORIES --------------
+model Category {
+  id    String @id @default(cuid())
+  name  String
+  tasks Task[]
+}
+
+// -------------- TASKS --------------
+enum TaskStatus {
+  BACKLOG
+  IN_PROGRESS
+  BLOCKED
+  DONE
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TaskActivityType {
+  TASK_CREATED
+  STATUS_CHANGE
+  PRIORITY_CHANGE
+  COMMENT_ADDED
+  TASK_ARCHIVED
+}
+
+model Task {
+  id          String  @id @default(cuid())
+  taskKey     String  @unique
+  title       String
+  description String?
+
+  creatorId String
+  creator   User   @relation("TaskCreator", fields: [creatorId], references: [id])
+
+  assignees User[] @relation("TaskAssignees")
+
+  status   TaskStatus   @default(BACKLOG)
+  priority TaskPriority @default(MEDIUM)
+
+  categoryId String
+  category   Category @relation(fields: [categoryId], references: [id])
+
+  // The Unified Timeline
+  activities TaskActivity[]
+
+  startDate  DateTime?
+  dueDate    DateTime?
+  archivedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model TaskActivity {
+  id     String           @id @default(cuid())
+  type   TaskActivityType
+  taskId String
+  task   Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  // For COMMENT_ADDED: Store the message here
+  content String?
+
+  // Optional: For "X changed status from [oldValue] to [newValue]"
+  oldValue String?
+  newValue String?
+
+  createdAt DateTime @default(now())
+}
