@@ -1,0 +1,228 @@
+{
+  // ═══════════════════════════════════════════════════════════
+  // 🎨 WORKSPACE & UI
+  // ═══════════════════════════════════════════════════════════
+  "window.title": "${activeEditorMedium}",
+  "workbench.statusBar.visible": true,
+  "explorer.confirmDragAndDrop": false,
+
+  // ═══════════════════════════════════════════════════════════
+  // 🏷️ EDITOR LABELS (Next.js)
+  // ═══════════════════════════════════════════════════════════
+  "workbench.editor.customLabels.enabled": true,
+  "workbench.editor.customLabels.patterns": {
+    "**/app/**/{page,layout,template,loading,error,not-found,route}.{tsx,ts,jsx,js}": "${filename} | ${dirname}",
+    "**/index.{tsx,ts,jsx,js}": "${dirname} | index",
+    "**/features/**/actions/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/features/**/components/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/features/**/queries/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/features/**/events/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/features/**/hooks/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/features/**/utils/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/features/**/emails/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/features/**/service/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/features/**/dto/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/features/**/db/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/components/**/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/lib/hooks/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/emails/**/*.{tsx,ts,jsx,js}": "📧 ${dirname} | ${filename}",
+    "**/features/**/{schema,types,type,constants}.{tsx,ts,jsx,js}": "${dirname} | ${filename}",
+    "**/features/**/contexts/*.{tsx,ts,jsx,js}": "${dirname} | ${filename}"
+  },
+
+  // ═══════════════════════════════════════════════════════════
+  // ✨ CODE FORMATTING & QUALITY
+  // ═══════════════════════════════════════════════════════════
+
+  // Global formatting settings
+  // "editor.defaultFormatter": "biomejs.biome",
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": false,
+  "editor.inlineSuggest.enabled": true,
+
+  // Auto-fix and import management on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.addMissingImports": "explicit",
+    "source.organizeImports": "never"
+  },
+
+  // Language-specific formatting rules
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
+  "[javascript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[astro]": {
+    "editor.formatOnSave": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "prettier.documentSelectors": ["**/*.astro"],
+
+  // ═══════════════════════════════════════════════════════════
+  // 🔧 JAVASCRIPT & TYPESCRIPT
+  // ═══════════════════════════════════════════════════════════
+
+  // ESLint configuration
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+
+  // JS/TS behavior settings
+  "javascript.validate.enable": false,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "typescript.preferences.autoImportFileExcludePatterns": ["@radix-ui"],
+  "typescript.updateImportsOnFileMove.enabled": "never",
+  "js/ts.implicitProjectConfig.checkJs": true,
+  "debug.javascript.codelens.npmScripts": "never",
+
+  // ═══════════════════════════════════════════════════════════
+  // 🔒 SECURITY & PRIVACY
+  // ═══════════════════════════════════════════════════════════
+
+  // Hide environment variable values to prevent accidental exposure
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "name": "Hide Environment Variables",
+        "scope": "string.quoted.single.ini,constant.numeric.ini,string.quoted.double.ini",
+        "settings": {
+          // "foreground": "#ffffff00"
+        }
+      }
+    ]
+  },
+
+  // Visual security indicators for tRPC procedures
+  "todohighlight.isEnable": true,
+  "todohighlight.isCaseSensitive": true,
+  "todohighlight.keywords": [
+    {
+      "text": "ctx.prisma.stripeIntegration",
+      "color": "red",
+      "border": "1px solid red",
+      "borderRadius": "4px",
+      "backgroundColor": "rgba(0,0,0,.2)",
+      "isWholeLine": false
+    },
+    {
+      "text": "adminProcedure",
+      "color": "red",
+      "border": "1px solid red",
+      "borderRadius": "4px",
+      "backgroundColor": "rgba(0,0,0,.2)",
+      "isWholeLine": false
+    },
+    {
+      "text": "authProcedure",
+      "color": "red",
+      "border": "1px solid red",
+      "borderRadius": "4px",
+      "backgroundColor": "rgba(0,0,0,.2)",
+      "isWholeLine": false
+    },
+    {
+      "text": "publicProcedure",
+      "color": "green",
+      "border": "1px solid green",
+      "borderRadius": "4px",
+      "backgroundColor": "rgba(0,0,0,.2)",
+      "isWholeLine": false
+    }
+  ],
+
+  // ═══════════════════════════════════════════════════════════
+  // 📝 SPELL CHECKING
+  // ═══════════════════════════════════════════════════════════
+
+  // Disable spell checking for code files, enable only for documentation
+  "cSpell.enableFiletypes": [
+    "!asciidoc",
+    "!c",
+    "!cpp",
+    "!csharp",
+    "!css",
+    "!elixir",
+    "!erlang",
+    "!git-commit",
+    "!go",
+    "!graphql",
+    "!handlebars",
+    "!haskell",
+    "!html",
+    "!jade",
+    "!java",
+    "!javascript",
+    "!javascriptreact",
+    "!json",
+    "!jsonc",
+    "!jupyter",
+    "!less",
+    "!prisma",
+    "!php",
+    "!pug",
+    "!python",
+    "!restructuredtext",
+    "!rust",
+    "!scala",
+    "!scminput",
+    "!scss",
+    "!swift",
+    "!typescript",
+    "!typescriptreact",
+    "!vue",
+    "!yaml",
+    "!yml",
+    "mdx"
+  ],
+
+  // ═══════════════════════════════════════════════════════════
+  // 💻 TERMINAL
+  // ═══════════════════════════════════════════════════════════
+
+  // Auto-relaunch terminal when extensions need to modify environment
+  // "terminal.integrated.environmentChangesRelaunch": "on",
+
+  // Disable git terminal authentication if auto-relaunch doesn't work
+  // "git.terminalAuthentication": false,
+
+  // ═══════════════════════════════════════════════════════════
+  // 📦 VERSION CONTROL
+  // ═══════════════════════════════════════════════════════════
+
+  // Git and GitLens settings
+  "git.openRepositoryInParentFolders": "never",
+
+  // ═══════════════════════════════════════════════════════════
+  // 💅 TAILWIND CSS
+  // ═══════════════════════════════════════════════════════════
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    "ngClass",
+    "classList",
+    ".*ClassName",
+    ".*Class"
+  ]
+}

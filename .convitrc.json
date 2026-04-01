@@ -1,0 +1,17 @@
+{
+  "scopePatterns": [
+    { "pattern": "src/app/([^/]+)/.*", "scope": "$1", "weight": 10 },
+    { "pattern": "package(-lock)?\\.json", "scope": "deps", "weight": 7 },
+    { "pattern": "\\.gitignore", "scope": "git", "weight": 7 },
+    { "pattern": "README\\.md", "scope": "docs", "weight": 7 },
+    { "pattern": "\\.env.*", "scope": "env", "weight": 7 },
+    { "pattern": "src/([^/]+)/.*", "scope": "$1", "weight": 6 },
+    { "pattern": "public/.*", "scope": "public", "weight": 5 },
+    {
+      "pattern": "(next\\.config\\.ts|postcss\\.config\\.mjs|eslint\\.config\\.mjs|tsconfig\\.json)",
+      "scope": "config",
+      "weight": 3
+    },
+    { "pattern": "\\.agents/.*", "scope": "agents", "weight": 3 }
+  ]
+}

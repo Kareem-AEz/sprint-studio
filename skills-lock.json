@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "convit-setup": {
+      "source": "Kareem-AEz/convit",
+      "sourceType": "github",
+      "computedHash": "f41727b03946baa581e94af4762b5514dfa3d404a4724e4ebfac5a5887bd549f"
+    }
+  }
+}
