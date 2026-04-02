@@ -1,10 +1,12 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Header } from "@/components/navigation/header";
 import { AppSidebar } from "@/components/sidebar/app-sidebar";
-import { SidebarProvider } from "@/components/sidebar/sidebar-provider";
 import { ThemeProvider } from "@/components/theme/theme-provider";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AuthProvider } from "@/features/auth/components/auth-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,12 +36,17 @@ export default async function RootLayout({
     >
       <body className="flex min-h-full flex-col">
         <ThemeProvider>
-          <TooltipProvider delayDuration={100} disableHoverableContent>
-            <SidebarProvider>
-              <AppSidebar />
-              {children}
-            </SidebarProvider>
-          </TooltipProvider>
+          <AuthProvider>
+            <TooltipProvider delayDuration={100} disableHoverableContent>
+              <SidebarProvider>
+                <AppSidebar />
+                <SidebarInset>
+                  <Header />
+                  {children}
+                </SidebarInset>
+              </SidebarProvider>
+            </TooltipProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
