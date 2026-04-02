@@ -33,6 +33,7 @@ Every domain in `src/features/[feature-name]/` must follow this rigid structure:
 - **State Management:** URL-First via `nuqs`. Every filter, search, and page change must be reflected in the URL.
 - **Validation:** Zod-first. Strict schema enforcement at the boundary.
 - **UI:** Tailwind CSS + Shadcn/UI (Custom Themed). Pixel-perfection is mandatory.
+- **Icons:** Centralicons. Use the `@central-icons-react` package (aliased as `central-icons`).
 
 ## 4. Design Judgment & Gap Filling
 - **Pixel-Perfection:** Enforce the 4/8/12/16px spacing scale. Component dimensions must feel deliberate.
