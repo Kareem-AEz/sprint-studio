@@ -1,7 +1,5 @@
-import { IconPlusSmall } from "central-icons";
-import { Heading } from "@/components/heading";
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
-import { Button } from "@/components/ui/button";
+import { TaskDetailsHeader } from "@/features/tasks/components/task-details/task-details-header";
 import { TaskError } from "@/features/tasks/components/task-error";
 import { TaskNotFound } from "@/features/tasks/components/task-not-found";
 import { getTaskById } from "@/features/tasks/queries/get-task-by-id";
@@ -41,16 +39,30 @@ export default async function TaskDetailsPage({
           />
         </div>
 
-        <div className="bg-card flex min-w-0 flex-1 flex-col gap-12 rounded-lg border p-4 md:p-6">
-          <Heading
-            title="Sprint Board"
-            action={
-              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-                <IconPlusSmall className="mr-1 size-5" />
-                New Task
-              </Button>
-            }
-          />
+        {/* Task Details Layout */}
+        <div className="bg-card flex min-w-0 flex-1 flex-row gap-6 rounded-lg border border-amber-400 p-4 md:p-6">
+          {/* Task Details Content */}
+          <div className="flex basis-3/4 flex-col gap-4">
+            {/* Task Details Header and Content */}
+            <div className="flex basis-1/2 flex-col gap-4">
+              <div className="flex-1 border border-cyan-600">
+                <TaskDetailsHeader task={task} />
+              </div>
+              <div className="flex-1 border border-yellow-600">
+                Task Details Content
+              </div>
+            </div>
+
+            {/* Task Details Activity */}
+            <div className="basis-1/2 border border-red-600">
+              Task Details Activity
+            </div>
+          </div>
+
+          {/* Task Details Sidebar */}
+          <div className="shrink-0 basis-1/4 border border-green-600">
+            Task Details Sidebar
+          </div>
         </div>
       </div>
     );

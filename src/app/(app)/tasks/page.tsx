@@ -80,7 +80,7 @@ export default function Tasks() {
           </div>
 
           {/* Tasks List with Suspense */}
-          <div className="mt-4 flex flex-1 items-center justify-center">
+          <div className="mt-4 flex-1">
             <Suspense
               fallback={
                 <div className="space-y-4">

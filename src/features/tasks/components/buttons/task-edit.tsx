@@ -5,11 +5,25 @@ import { PATHS } from "@/lib/paths";
 
 interface TaskEditProps {
   taskId: string;
+  variant?: "ghost" | "outline" | "secondary" | "destructive" | "link";
+  size?:
+    | "xs"
+    | "sm"
+    | "lg"
+    | "default"
+    | "icon"
+    | "icon-xs"
+    | "icon-sm"
+    | "icon-lg";
 }
 
-export function TaskEdit({ taskId }: TaskEditProps) {
+export function TaskEdit({
+  taskId,
+  variant = "ghost",
+  size = "sm",
+}: TaskEditProps) {
   return (
-    <Button variant="ghost" size="sm" className="w-full justify-start" asChild>
+    <Button variant={variant} size={size} asChild>
       <Link href={PATHS.TASK_EDIT.href(taskId)}>
         <IconPencil className="size-4" />
         Edit Task

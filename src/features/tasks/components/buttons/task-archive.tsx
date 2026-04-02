@@ -3,11 +3,25 @@ import { Button } from "@/components/ui/button";
 
 interface TaskArchiveProps {
   taskId: string;
+  variant?: "ghost" | "outline" | "secondary" | "destructive" | "link";
+  size?:
+    | "xs"
+    | "sm"
+    | "lg"
+    | "default"
+    | "icon"
+    | "icon-xs"
+    | "icon-sm"
+    | "icon-lg";
 }
 
-export function TaskArchive({ taskId }: TaskArchiveProps) {
+export function TaskArchive({
+  taskId,
+  variant = "destructive",
+  size = "sm",
+}: TaskArchiveProps) {
   return (
-    <Button variant="destructive" size="sm" className="w-full justify-start">
+    <Button variant={variant} size={size}>
       <IconArchive className="size-4" />
       Archive Task
     </Button>

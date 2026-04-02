@@ -1,5 +1,4 @@
 import { IconDotGrid1x3VerticalTight, IconPlusSmall } from "central-icons";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,22 +8,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Task } from "@/features/tasks/queries/types";
-import { TaskStatus } from "@/generated/prisma/enums";
-import { cn } from "@/lib/utils";
 import { TASK_STATUS_OPTIONS } from "../lib/constants";
-import { formatDisplayValue } from "../utils/format";
+import { TaskStatusBadge } from "./badges/task-status-badge";
 import { TaskItem } from "./task-item";
 
 interface TasksListProps {
   tasks: Task[];
 }
-
-const STATUS_CONFIG: Record<TaskStatus, { color: string; bgColor: string }> = {
-  BACKLOG: { color: "text-slate-500", bgColor: "bg-slate-500/10" },
-  IN_PROGRESS: { color: "text-blue-500", bgColor: "bg-blue-500/10" },
-  BLOCKED: { color: "text-red-500", bgColor: "bg-red-500/10" },
-  DONE: { color: "text-green-500", bgColor: "bg-green-500/10" },
-};
 
 export function TasksList({ tasks }: TasksListProps) {
   // Group tasks by status
@@ -43,16 +33,7 @@ export function TasksList({ tasks }: TasksListProps) {
             {/* Status Header */}
             <div className="bg-muted flex items-center justify-between p-4">
               <div className="flex items-center gap-2">
-                <Badge
-                  variant="outline"
-                  className={cn(
-                    "border-transparent font-semibold tracking-wide uppercase",
-                    STATUS_CONFIG[status].bgColor,
-                    STATUS_CONFIG[status].color,
-                  )}
-                >
-                  {formatDisplayValue(status)}
-                </Badge>
+                <TaskStatusBadge status={status} />
                 <span className="text-muted-foreground text-sm font-medium">
                   {statusTasks.length}
                 </span>

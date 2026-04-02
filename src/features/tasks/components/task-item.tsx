@@ -1,7 +1,6 @@
-import { IconDotGrid1x3VerticalTight, IconFlag2 } from "central-icons";
+import { IconDotGrid1x3VerticalTight } from "central-icons";
 import Link from "next/link";
 import { AvatarGroup } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,11 +11,10 @@ import {
 import { TableCell, TableRow } from "@/components/ui/table";
 import { UserAvatar } from "@/features/auth/components/user-avatar";
 import { Task } from "@/features/tasks/queries/types";
-import { TaskPriority } from "@/generated/prisma/enums";
-import { getCategoryColor } from "@/lib/colors";
 import { PATHS } from "@/lib/paths";
 import { cn } from "@/lib/utils";
-import { formatDisplayValue } from "../utils/format";
+import { TaskCategoryBadge } from "./badges/task-category-badge";
+import { TaskPriorityBadge } from "./badges/task-priority-badge";
 import { TaskArchive } from "./buttons/task-archive";
 import { TaskEdit } from "./buttons/task-edit";
 import { TaskIcon } from "./task-icon";
@@ -24,13 +22,6 @@ import { TaskIcon } from "./task-icon";
 interface TaskItemProps {
   task: Task;
 }
-
-const PRIORITY_ICONS: Record<TaskPriority, React.ReactNode> = {
-  LOW: <IconFlag2 className="size-5 text-slate-400" />,
-  MEDIUM: <IconFlag2 className="size-5 text-amber-500" />,
-  HIGH: <IconFlag2 className="size-5 text-orange-500" />,
-  URGENT: <IconFlag2 className="size-5 text-red-500" />,
-};
 
 const MAX_ASSIGNEE_AVATARS = 3;
 
@@ -41,8 +32,6 @@ export function TaskItem({ task }: TaskItemProps) {
       : task.assignees;
   const remainingAssignees = task.assignees.length - assignees.length;
   const hasRemainingAssignees = remainingAssignees > 0;
-
-  const categoryColor = getCategoryColor(task.category.name);
 
   return (
     <TableRow className="group relative">
@@ -86,12 +75,7 @@ export function TaskItem({ task }: TaskItemProps) {
 
       {/* Priority */}
       <TableCell className="w-[140px] px-4 text-start">
-        <div className="flex items-center justify-start gap-2">
-          {PRIORITY_ICONS[task.priority]}
-          <span className="font-mono text-sm">
-            {formatDisplayValue(task.priority)}
-          </span>
-        </div>
+        <TaskPriorityBadge priority={task.priority} />
       </TableCell>
 
       {/* Start Date */}
@@ -128,22 +112,7 @@ export function TaskItem({ task }: TaskItemProps) {
 
       {/* Category */}
       <TableCell className="w-[140px] px-4 text-center">
-        <Badge
-          variant="outline"
-          className="border-(--cat-border) bg-(--cat-bg) font-mono text-sm text-(--cat-text) dark:border-(--cat-border-dark) dark:bg-(--cat-bg-dark) dark:text-(--cat-text-dark)"
-          style={
-            {
-              "--cat-bg": categoryColor.light.bg,
-              "--cat-text": categoryColor.light.text,
-              "--cat-border": categoryColor.light.border,
-              "--cat-bg-dark": categoryColor.dark.bg,
-              "--cat-text-dark": categoryColor.dark.text,
-              "--cat-border-dark": categoryColor.dark.border,
-            } as React.CSSProperties
-          }
-        >
-          {task.category.name}
-        </Badge>
+        <TaskCategoryBadge categoryName={task.category.name} />
       </TableCell>
 
       {/* Task Actions */}
