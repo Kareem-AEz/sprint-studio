@@ -2,13 +2,11 @@
 
 import {
   IconBell2,
-  IconChevronRightSmall,
   IconMagnifyingGlass,
   IconSettingsGear1,
 } from "central-icons";
 import ThemeSwitcher from "@/components/theme/theme-switcher";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { UserAvatar } from "@/features/auth/components/user-avatar";
 import { useAuth } from "@/features/auth/hooks/use-auth";
@@ -17,15 +15,13 @@ export function Header() {
   const { user, isLoading } = useAuth();
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b px-4 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+    <header className="flex h-16 shrink-0 items-center justify-between border-b px-4">
       <div className="flex items-center justify-center gap-2">
         <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="my-auto mr-2 h-4" />
-        <nav className="flex items-center gap-2 text-sm font-medium select-none">
-          <span className="text-muted-foreground">Projects</span>
-          <IconChevronRightSmall className="text-muted-foreground size-4" />
-          <span className="text-foreground">Sprint Board</span>
-        </nav>
+
+        {/* Breadcrumbs will be added to each page for dynamic navigation, including support for [taskKey]. */}
+        {/* <Separator orientation="vertical" className="my-auto mr-2 h-4" />
+        <Breadcrumbs /> */}
       </div>
 
       <div className="flex items-center gap-4">

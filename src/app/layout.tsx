@@ -1,10 +1,9 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Header } from "@/components/navigation/header";
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { ThemeProvider } from "@/components/theme/theme-provider";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/features/auth/components/auth-provider";
 
@@ -38,13 +37,8 @@ export default async function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <TooltipProvider delayDuration={100} disableHoverableContent>
-              <SidebarProvider>
-                <AppSidebar />
-                <SidebarInset>
-                  <Header />
-                  {children}
-                </SidebarInset>
-              </SidebarProvider>
+              <Toaster />
+              <NuqsAdapter>{children}</NuqsAdapter>
             </TooltipProvider>
           </AuthProvider>
         </ThemeProvider>
