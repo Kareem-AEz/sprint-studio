@@ -42,7 +42,7 @@ export default function Tasks() {
         />
 
         {/* Tasks Main Content Section */}
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-1 flex-col gap-6">
           {/* View options */}
           <div className="flex h-12 min-w-0 flex-col gap-4">
             <div className="relative w-full overflow-x-auto overflow-y-hidden pl-8 md:pl-0">
@@ -80,7 +80,7 @@ export default function Tasks() {
           </div>
 
           {/* Tasks List with Suspense */}
-          <div className="mt-4">
+          <div className="mt-4 flex flex-1 items-center justify-center">
             <Suspense
               fallback={
                 <div className="space-y-4">

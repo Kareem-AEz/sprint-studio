@@ -2,6 +2,7 @@ import { IconPlusSmall } from "central-icons";
 import { Heading } from "@/components/heading";
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
 import { Button } from "@/components/ui/button";
+import { TaskError } from "@/features/tasks/components/task-error";
 import { TaskNotFound } from "@/features/tasks/components/task-not-found";
 import { getTaskById } from "@/features/tasks/queries/get-task-by-id";
 import { PATHS } from "@/lib/paths";
@@ -25,30 +26,48 @@ export default async function TaskDetailsPage({
   params,
 }: TaskDetailsPageProps) {
   const { taskId } = await params;
-  const task = await getTaskById(taskId);
 
-  // We're using a server component to handle the not found state, because the not-found.tsx page is crashing the routing system
-  if (!task) return <TaskNotFound taskId={taskId} />;
+  try {
+    const task = await getTaskById(taskId);
 
-  return (
-    <div className="bg-background flex min-w-0 flex-1 flex-col gap-4 p-2 md:p-4 lg:p-8">
-      {/* Breadcrumbs positioned above the main content card */}
-      <div className="px-2">
-        <Breadcrumbs breadcrumbs={[...breadcrumbs, { label: task?.taskKey }]} />
+    // We're using a server component to handle the not found state, because the not-found.tsx page is crashing the routing system
+    if (!task) return <TaskNotFound taskId={taskId} />;
+
+    return (
+      <div className="bg-background flex min-w-0 flex-1 flex-col gap-4 p-2 md:p-4 lg:p-8">
+        <div className="px-2">
+          <Breadcrumbs
+            breadcrumbs={[...breadcrumbs, { label: task?.taskKey }]}
+          />
+        </div>
+
+        <div className="bg-card flex min-w-0 flex-1 flex-col gap-12 rounded-lg border p-4 md:p-6">
+          <Heading
+            title="Sprint Board"
+            action={
+              <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+                <IconPlusSmall className="mr-1 size-5" />
+                New Task
+              </Button>
+            }
+          />
+        </div>
       </div>
+    );
+  } catch (error) {
+    console.error(`Error loading task ${taskId}:`, error);
 
-      {/* Main Content Card (The Board) */}
-      <div className="bg-card flex min-w-0 flex-1 flex-col gap-12 rounded-lg border p-4 md:p-6">
-        <Heading
-          title="Sprint Board"
-          action={
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-              <IconPlusSmall className="mr-1 size-5" />
-              New Task
-            </Button>
-          }
-        />
-      </div>
-    </div>
-  );
+    // Since we are in a Server Component, we pass a simple reload function
+    // or let the TaskError handle its own reset via window.location
+    return (
+      //BUG: We're using a server component to handle the error state, because the error.tsx page is crashing the routing system as well `So Weird!`
+      <TaskError
+        error={error as Error}
+        reset={() => {
+          "use client";
+          window.location.reload();
+        }}
+      />
+    );
+  }
 }
