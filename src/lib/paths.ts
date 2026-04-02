@@ -11,4 +11,8 @@ export const PATHS = {
     label: "Edit Task",
     href: (taskId: string) => `/tasks/${taskId}/edit`,
   },
+  TASK_DETAILS: {
+    label: "Task Details",
+    href: (taskId: string) => `/tasks/${taskId}`,
+  },
 } as const;

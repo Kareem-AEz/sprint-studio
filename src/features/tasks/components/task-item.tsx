@@ -47,7 +47,7 @@ export function TaskItem({ task }: TaskItemProps) {
   const categoryColor = getCategoryColor(task.category.name);
 
   return (
-    <TableRow className="group">
+    <TableRow className="group relative">
       {/* Task Icon */}
       <TableCell className="w-14 px-4">
         <div className="flex items-center gap-3">
@@ -60,7 +60,12 @@ export function TaskItem({ task }: TaskItemProps) {
       {/* Task Name */}
       <TableCell className="min-w-[300px] px-4">
         <div className="flex flex-col">
-          <span className="text-sm font-medium">{task.title}</span>
+          <Link
+            href={PATHS.TASK_DETAILS.href(task.id)}
+            className="group-hover:text-primary text-sm font-medium transition-colors after:absolute after:inset-0"
+          >
+            {task.title}
+          </Link>
           <span className="text-muted-foreground truncate text-[10px] uppercase">
             {task.taskKey}
           </span>
@@ -76,8 +81,10 @@ export function TaskItem({ task }: TaskItemProps) {
             })}
           </AvatarGroup>
           {hasRemainingAssignees && (
-            <div className="text-primary flex size-8 shrink-0 items-center justify-center rounded text-sm font-bold">
-              <span className="text-sm font-bold">+{remainingAssignees}</span>
+            <div className="text-primary/50 flex size-8 shrink-0 items-center justify-start rounded">
+              <span className="translate-x-1/4 text-xs font-bold">
+                +{remainingAssignees}
+              </span>
             </div>
           )}
         </div>
@@ -146,7 +153,7 @@ export function TaskItem({ task }: TaskItemProps) {
       </TableCell>
 
       {/* Task Actions */}
-      <TableCell className="w-12 px-4 text-right">
+      <TableCell className="relative z-10 w-12 px-4 text-right">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
