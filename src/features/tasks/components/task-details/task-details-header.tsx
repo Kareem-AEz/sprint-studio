@@ -1,4 +1,7 @@
 import { Task } from "../../queries/types";
+import { TaskCategoryBadge } from "../badges/task-category-badge";
+import { TaskPriorityBadge } from "../badges/task-priority-badge";
+import { TaskStatusBadge } from "../badges/task-status-badge";
 import { TaskArchive } from "../buttons/task-archive";
 import { TaskEdit } from "../buttons/task-edit";
 import { TaskIcon } from "../task-icon";
@@ -9,7 +12,7 @@ interface TaskDetailsHeaderProps {
 
 export function TaskDetailsHeader({ task }: TaskDetailsHeaderProps) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       {/* Task Icon, Task Key and Action Buttons */}
       <div className="flex items-center justify-between">
         {/* Task Icon and Task Key */}
@@ -31,6 +34,11 @@ export function TaskDetailsHeader({ task }: TaskDetailsHeaderProps) {
       </div>
 
       {/* Task Metadata */}
+      <div className="flex gap-4">
+        <TaskStatusBadge status={task.status} />
+        <TaskPriorityBadge priority={task.priority} variant="badge" />
+        <TaskCategoryBadge categoryName={task.category.name} />
+      </div>
     </div>
   );
 }

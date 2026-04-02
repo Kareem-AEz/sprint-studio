@@ -13,6 +13,7 @@ import { UserAvatar } from "@/features/auth/components/user-avatar";
 import { Task } from "@/features/tasks/queries/types";
 import { PATHS } from "@/lib/paths";
 import { cn } from "@/lib/utils";
+import { formatDate } from "../utils/format";
 import { TaskCategoryBadge } from "./badges/task-category-badge";
 import { TaskPriorityBadge } from "./badges/task-priority-badge";
 import { TaskArchive } from "./buttons/task-archive";
@@ -81,12 +82,7 @@ export function TaskItem({ task }: TaskItemProps) {
       {/* Start Date */}
       <TableCell className="w-[160px] px-4 text-center">
         <span className="text-muted-foreground text-sm">
-          {task.startDate
-            ? task.startDate.toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-              })
-            : "--"}
+          {formatDate({ date: task.startDate })}
         </span>
       </TableCell>
 
@@ -100,13 +96,7 @@ export function TaskItem({ task }: TaskItemProps) {
               : "text-muted-foreground",
           )}
         >
-          {/* TODO: Use date-fns to format the date */}
-          {task.dueDate
-            ? task.dueDate.toLocaleDateString("en-US", {
-                month: "short",
-                day: "numeric",
-              })
-            : "--"}
+          {formatDate({ date: task.dueDate })}
         </span>
       </TableCell>
 
@@ -123,17 +113,18 @@ export function TaskItem({ task }: TaskItemProps) {
               variant="ghost"
               size="icon"
               className="size-8 opacity-0 group-hover:opacity-100"
+              aria-label="Task Actions"
             >
               <IconDotGrid1x3VerticalTight className="size-4" />
             </Button>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild className="w-full">
               <TaskEdit taskId={task.id} />
             </DropdownMenuItem>
 
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild className="w-full">
               <TaskArchive taskId={task.id} />
             </DropdownMenuItem>
           </DropdownMenuContent>

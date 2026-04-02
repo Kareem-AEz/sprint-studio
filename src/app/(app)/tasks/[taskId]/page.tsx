@@ -1,5 +1,10 @@
+import { Suspense } from "react";
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
+import { Separator } from "@/components/ui/separator";
+import { ActivityDetails } from "@/features/activity/components/activity-details";
+import { TaskDetailsContent } from "@/features/tasks/components/task-details/task-details-content";
 import { TaskDetailsHeader } from "@/features/tasks/components/task-details/task-details-header";
+import { TaskDetailsSidebar } from "@/features/tasks/components/task-details/task-details-sidebar";
 import { TaskError } from "@/features/tasks/components/task-error";
 import { TaskNotFound } from "@/features/tasks/components/task-not-found";
 import { getTaskById } from "@/features/tasks/queries/get-task-by-id";
@@ -40,29 +45,59 @@ export default async function TaskDetailsPage({
         </div>
 
         {/* Task Details Layout */}
-        <div className="bg-card flex min-w-0 flex-1 flex-row gap-6 rounded-lg border border-amber-400 p-4 md:p-6">
+        <div className="bg-card flex min-w-0 flex-1 flex-row gap-6 rounded-lg border">
           {/* Task Details Content */}
-          <div className="flex basis-3/4 flex-col gap-4">
+          <div className="flex basis-3/4 flex-col gap-12 p-4 md:p-6">
             {/* Task Details Header and Content */}
-            <div className="flex basis-1/2 flex-col gap-4">
-              <div className="flex-1 border border-cyan-600">
+            <div className="flex flex-col gap-8">
+              <div>
                 <TaskDetailsHeader task={task} />
               </div>
-              <div className="flex-1 border border-yellow-600">
-                Task Details Content
+              <Separator />
+              <div>
+                <TaskDetailsContent task={task} />
               </div>
             </div>
 
+            <Separator />
+
             {/* Task Details Activity */}
             <div className="basis-1/2 border border-red-600">
-              Task Details Activity
+              <ActivityDetails />
             </div>
           </div>
 
           {/* Task Details Sidebar */}
-          <div className="shrink-0 basis-1/4 border border-green-600">
-            Task Details Sidebar
-          </div>
+          <aside className="flex shrink-0 basis-1/4">
+            <Suspense
+              fallback={
+                <div className="flex flex-1 animate-pulse flex-col gap-12 border-l p-4 pt-0">
+                  {/* Sidebar header */}
+                  <div className="bg-muted mb-8 h-6 w-32 rounded" />
+                  {/* Sidebar content sections */}
+                  <div className="flex flex-col gap-8 border-b pb-8">
+                    {[...Array(4)].map((_, idx) => (
+                      <div className="flex flex-col gap-2" key={idx}>
+                        <div className="bg-muted h-4 w-16 rounded" />
+                        <div className="bg-muted h-6 w-full rounded" />
+                      </div>
+                    ))}
+                  </div>
+                  {/* Timeline */}
+                  <div className="mt-8 flex flex-col gap-4">
+                    {[...Array(4)].map((_, idx) => (
+                      <div className="flex flex-col justify-between" key={idx}>
+                        <div className="bg-muted/60 mb-1 h-3 w-14 rounded" />
+                        <div className="bg-muted h-4 w-24 rounded" />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              }
+            >
+              <TaskDetailsSidebar task={task} />
+            </Suspense>
+          </aside>
         </div>
       </div>
     );

@@ -42,6 +42,7 @@ export function Header() {
               variant="ghost"
               size="icon"
               className="text-muted-foreground"
+              aria-label="Notifications"
             >
               <IconBell2 className="size-5" />
             </Button>
@@ -49,6 +50,7 @@ export function Header() {
               variant="ghost"
               size="icon"
               className="text-muted-foreground"
+              aria-label="Settings"
             >
               <IconSettingsGear1 className="size-5" />
             </Button>

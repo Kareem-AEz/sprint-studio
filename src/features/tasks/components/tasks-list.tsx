@@ -41,10 +41,22 @@ export function TasksList({ tasks }: TasksListProps) {
 
               {/* Task Header Actions */}
               <div className="flex items-center gap-1">
-                <Button variant="ghost" size="icon" className="size-8" disabled>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8"
+                  disabled
+                  aria-label="Add Task"
+                >
                   <IconPlusSmall className="size-5" />
                 </Button>
-                <Button variant="ghost" size="icon" className="size-8" disabled>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="size-8"
+                  disabled
+                  aria-label="View Task"
+                >
                   <IconDotGrid1x3VerticalTight className="size-4" />
                 </Button>
               </div>
