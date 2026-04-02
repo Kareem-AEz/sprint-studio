@@ -15,7 +15,8 @@ export function TasksFilters() {
       <PopoverTrigger asChild>
         <Button
           variant="outline"
-          className="text-muted-foreground font-mono text-sm tracking-wider"
+          size="sm"
+          className="text-muted-foreground font-mono text-xs tracking-wider"
         >
           <IconFilter1 className="size-5" />
           <span>Tasks Filters</span>

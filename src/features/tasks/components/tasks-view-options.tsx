@@ -59,7 +59,7 @@ export function TasksViewOptions({ className }: { className?: string }) {
             <Button
               variant="ghost"
               className={cn(
-                "text-muted-foreground font-mono text-sm tracking-wider",
+                "text-muted-foreground font-mono text-xs tracking-wider",
                 isActive && "text-primary hover:text-primary",
               )}
               onClick={() => handleClick(option.label)}

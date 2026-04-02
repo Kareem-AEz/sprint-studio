@@ -31,6 +31,12 @@ export function FilterForm() {
   });
 
   const onSubmit = (values: FilterFormValues) => {
+    const { priority, status } = values;
+    const { priority: currentPriority, status: currentStatus } = queryParams;
+    if (priority === currentPriority && status === currentStatus) {
+      return;
+    }
+
     setQueryParams({
       priority: values.priority,
       status: values.status,

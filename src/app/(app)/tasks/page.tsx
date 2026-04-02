@@ -1,9 +1,12 @@
 import { IconPlusSmall } from "central-icons";
+import { Suspense } from "react";
 import { Heading } from "@/components/heading";
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { TaskFiltersOptions } from "@/features/tasks/components/tasks-filters-options";
+import { TasksTableContent } from "@/features/tasks/components/tasks-table-content";
 import { TasksViewOptions } from "@/features/tasks/components/tasks-view-options";
 import { PATHS } from "@/lib/paths";
 
@@ -51,6 +54,22 @@ export default function Tasks() {
           {/* Tasks Filters */}
           <div>
             <TaskFiltersOptions />
+          </div>
+
+          {/* Tasks List with Suspense */}
+          <div className="mt-4">
+            <Suspense
+              fallback={
+                <div className="space-y-4">
+                  <Skeleton className="h-10 w-full" />
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-20 w-full" />
+                </div>
+              }
+            >
+              <TasksTableContent />
+            </Suspense>
           </div>
         </div>
       </div>

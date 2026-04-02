@@ -43,7 +43,9 @@ export function TaskFiltersOptions() {
           component = (
             <Button
               variant="outline"
-              className="text-muted-foreground hidden font-mono text-sm tracking-wider lg:flex"
+              size="sm"
+              className="text-muted-foreground hidden font-mono text-xs tracking-wider lg:flex"
+              disabled={true}
             >
               {option.icon}
               <span>{option.label}</span>
