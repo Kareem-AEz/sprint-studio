@@ -1,3 +1,54 @@
-export default function TaskDetailsPage() {
-  return <div>TaskDetailsPage</div>;
+import { IconPlusSmall } from "central-icons";
+import { Heading } from "@/components/heading";
+import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
+import { Button } from "@/components/ui/button";
+import { TaskNotFound } from "@/features/tasks/components/task-not-found";
+import { getTaskById } from "@/features/tasks/queries/get-task-by-id";
+import { PATHS } from "@/lib/paths";
+
+const breadcrumbs = [
+  {
+    label: PATHS.HOME.label,
+    href: PATHS.HOME.href(),
+  },
+  {
+    label: PATHS.TASKS.label,
+    href: PATHS.TASKS.href(),
+  },
+];
+
+type TaskDetailsPageProps = {
+  params: Promise<{ taskId: string }>;
+};
+
+export default async function TaskDetailsPage({
+  params,
+}: TaskDetailsPageProps) {
+  const { taskId } = await params;
+  const task = await getTaskById(taskId);
+
+  // We're using a server component to handle the not found state, because the not-found.tsx page is crashing the routing system
+  if (!task) return <TaskNotFound taskId={taskId} />;
+
+  return (
+    <div className="bg-background flex min-w-0 flex-1 flex-col gap-4 p-2 md:p-4 lg:p-8">
+      {/* Breadcrumbs positioned above the main content card */}
+      <div className="px-2">
+        <Breadcrumbs breadcrumbs={[...breadcrumbs, { label: task?.taskKey }]} />
+      </div>
+
+      {/* Main Content Card (The Board) */}
+      <div className="bg-card flex min-w-0 flex-1 flex-col gap-12 rounded-lg border p-4 md:p-6">
+        <Heading
+          title="Sprint Board"
+          action={
+            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <IconPlusSmall className="mr-1 size-5" />
+              New Task
+            </Button>
+          }
+        />
+      </div>
+    </div>
+  );
 }

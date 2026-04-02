@@ -15,7 +15,7 @@ import {
  * Type definition for a single breadcrumb item.
  */
 type BreadcrumbType = {
-  label: string;
+  label: string | React.ReactNode;
   href?: string;
 };
 
@@ -37,7 +37,13 @@ export function Breadcrumbs({ breadcrumbs = [] }: BreadcrumbProps) {
           if (isLast || !breadcrumb.href) {
             item = (
               <BreadcrumbPage aria-current="page" className="select-none">
-                {breadcrumb.label}
+                {typeof breadcrumb.label === "string" ? (
+                  breadcrumb.label
+                ) : (
+                  <span className="font-mono" style={{ whiteSpace: "pre" }}>
+                    {breadcrumb.label}
+                  </span>
+                )}
               </BreadcrumbPage>
             );
           } else {

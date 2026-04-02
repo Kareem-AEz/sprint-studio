@@ -44,16 +44,39 @@ export default function Tasks() {
         {/* Tasks Main Content Section */}
         <div className="flex flex-col gap-6">
           {/* View options */}
-          <div className="relative flex min-w-0 flex-col gap-4">
-            <Separator className="absolute right-0 bottom-0 left-0" />
-            <div className="w-full overflow-x-auto overflow-y-hidden pl-8 md:pl-0">
-              <TasksViewOptions />
+          <div className="flex h-12 min-w-0 flex-col gap-4">
+            <div className="relative w-full overflow-x-auto overflow-y-hidden pl-8 md:pl-0">
+              <Separator className="absolute right-0 bottom-0 left-0" />
+              <Suspense
+                fallback={
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-9 w-20" />
+                    <Skeleton className="h-9 w-24" />
+                    <Skeleton className="h-9 w-26" />
+                    <Skeleton className="h-9 w-28" />
+                    <Skeleton className="h-9 w-28" />
+                  </div>
+                }
+              >
+                <TasksViewOptions />
+              </Suspense>
             </div>
           </div>
 
           {/* Tasks Filters */}
           <div>
-            <TaskFiltersOptions />
+            <Suspense
+              fallback={
+                <div className="flex items-center gap-2">
+                  <Skeleton className="h-9 w-32" />
+                  <Skeleton className="h-9 w-24" />
+                  <Skeleton className="h-9 w-28" />
+                  <Skeleton className="h-9 w-32" />
+                </div>
+              }
+            >
+              <TaskFiltersOptions />
+            </Suspense>
           </div>
 
           {/* Tasks List with Suspense */}

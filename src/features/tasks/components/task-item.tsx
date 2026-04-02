@@ -1,9 +1,4 @@
-import {
-  IconArchive,
-  IconDotGrid1x3VerticalTight,
-  IconFlag2,
-  IconPencil,
-} from "central-icons";
+import { IconDotGrid1x3VerticalTight, IconFlag2 } from "central-icons";
 import Link from "next/link";
 import { AvatarGroup } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -22,6 +17,9 @@ import { getCategoryColor } from "@/lib/colors";
 import { PATHS } from "@/lib/paths";
 import { cn } from "@/lib/utils";
 import { formatDisplayValue } from "../utils/format";
+import { TaskArchive } from "./buttons/task-archive";
+import { TaskEdit } from "./buttons/task-edit";
+import { TaskIcon } from "./task-icon";
 
 interface TaskItemProps {
   task: Task;
@@ -50,11 +48,7 @@ export function TaskItem({ task }: TaskItemProps) {
     <TableRow className="group relative">
       {/* Task Icon */}
       <TableCell className="w-14 px-4">
-        <div className="flex items-center gap-3">
-          <div className="bg-primary/10 text-primary flex size-8 shrink-0 items-center justify-center rounded text-sm font-bold">
-            {task.taskKey.split("-")[0].charAt(0)}
-          </div>
-        </div>
+        <TaskIcon taskKey={task.taskKey} />
       </TableCell>
 
       {/* Task Name */}
@@ -167,27 +161,11 @@ export function TaskItem({ task }: TaskItemProps) {
 
           <DropdownMenuContent align="end">
             <DropdownMenuItem asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-full justify-start"
-                asChild
-              >
-                <Link href={PATHS.TASK_EDIT.href(task.id)}>
-                  <IconPencil className="size-4" />
-                  Edit Task
-                </Link>
-              </Button>
+              <TaskEdit taskId={task.id} />
             </DropdownMenuItem>
+
             <DropdownMenuItem asChild>
-              <Button
-                variant="destructive"
-                size="sm"
-                className="w-full justify-start"
-              >
-                <IconArchive className="size-4" />
-                Archive Task
-              </Button>
+              <TaskArchive taskId={task.id} />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
