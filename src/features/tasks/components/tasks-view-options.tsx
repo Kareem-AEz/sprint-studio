@@ -30,7 +30,7 @@ export const TASKS_VIEW_OPTIONS = TASKS_VIEW_OPTIONS_LABELS.map((label) => ({
 }));
 
 export function TasksViewOptions({ className }: { className?: string }) {
-  const [view, setView] = useQueryState("view", tasksSearchParams.viewParser);
+  const [view, setView] = useQueryState("view", tasksSearchParams.view);
   const { toast } = useToast();
 
   const handleClick = (label: TasksViewOption) => {
@@ -50,7 +50,7 @@ export function TasksViewOptions({ className }: { className?: string }) {
   };
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    <div className={cn("flex min-w-0 items-center md:gap-2", className)}>
       {TASKS_VIEW_OPTIONS.map((option) => {
         const isActive = view === option.label;
 

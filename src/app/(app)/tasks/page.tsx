@@ -3,6 +3,7 @@ import { Heading } from "@/components/heading";
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { TaskFiltersOptions } from "@/features/tasks/components/tasks-filters-options";
 import { TasksViewOptions } from "@/features/tasks/components/tasks-view-options";
 import { PATHS } from "@/lib/paths";
 
@@ -19,14 +20,14 @@ const breadcrumbs = [
 
 export default function Tasks() {
   return (
-    <div className="bg-background flex flex-1 flex-col gap-4 p-4 md:p-8">
+    <div className="bg-background flex min-w-0 flex-1 flex-col gap-4 p-2 md:p-4 lg:p-8">
       {/* Breadcrumbs positioned above the main content card */}
       <div className="px-2">
         <Breadcrumbs breadcrumbs={breadcrumbs} />
       </div>
 
       {/* Main Content Card (The Board) */}
-      <div className="bg-card flex flex-1 flex-col gap-12 rounded-lg border p-6">
+      <div className="bg-card flex min-w-0 flex-1 flex-col gap-12 rounded-lg border p-4 md:p-6">
         <Heading
           title="Sprint Board"
           action={
@@ -37,14 +38,20 @@ export default function Tasks() {
           }
         />
 
-        <div className="">
+        {/* Tasks Main Content Section */}
+        <div className="flex flex-col gap-6">
           {/* View options */}
-          <div className="relative flex flex-col gap-4">
-            <TasksViewOptions className="z-10" />
+          <div className="relative flex min-w-0 flex-col gap-4">
             <Separator className="absolute right-0 bottom-0 left-0" />
+            <div className="w-full overflow-x-auto overflow-y-hidden pl-8 md:pl-0">
+              <TasksViewOptions />
+            </div>
           </div>
 
           {/* Tasks Filters */}
+          <div>
+            <TaskFiltersOptions />
+          </div>
         </div>
       </div>
     </div>

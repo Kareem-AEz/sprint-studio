@@ -9,6 +9,7 @@ import {
   IconTag,
   IconTodos,
 } from "central-icons";
+import { PATHS } from "@/lib/paths";
 
 export const SIDEBAR_CONFIG = {
   user: {
@@ -50,7 +51,7 @@ export const SIDEBAR_CONFIG = {
   projects: [
     {
       title: "Sprint Board",
-      url: "/projects/sprint-board",
+      url: PATHS.TASKS.href(),
       icon: <IconKanbanView />,
       isActive: true,
     },
