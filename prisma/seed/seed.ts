@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
 import {
   PrismaClient,
   TaskActivityType,
@@ -7,11 +8,18 @@ import {
   TaskStatus,
 } from "@/generated/prisma/client";
 
-// Following the documentation: PrismaBetterSqlite3 expects an object with a 'url' property.
-const url = process.env.DATABASE_URL || "file:./database/db.sqlite";
+function createAdapter() {
+  if (process.env.TURSO_DATABASE_URL) {
+    return new PrismaLibSql({
+      url: process.env.TURSO_DATABASE_URL,
+      authToken: process.env.TURSO_AUTH_TOKEN,
+    });
+  }
+  const url = process.env.DATABASE_URL || "file:./database/db.sqlite";
+  return new PrismaBetterSqlite3({ url });
+}
 
-const adapter = new PrismaBetterSqlite3({ url });
-const prisma = new PrismaClient({ adapter });
+const prisma = new PrismaClient({ adapter: createAdapter() });
 
 const users = [
   {
@@ -67,7 +75,6 @@ const categories = [
 
 async function main() {
   console.log("Seeding started...");
-  console.log("Using DATABASE_URL:", url);
 
   // 1. Cleanup existing data
   await prisma.taskActivity.deleteMany();
