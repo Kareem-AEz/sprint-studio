@@ -19,4 +19,8 @@ export const PATHS = {
     label: "Task Details",
     href: (taskId: string) => `/tasks/${taskId}`,
   },
+  TEST_ERROR: {
+    label: "Test Errors",
+    href: () => "/test-error",
+  },
 } as const;

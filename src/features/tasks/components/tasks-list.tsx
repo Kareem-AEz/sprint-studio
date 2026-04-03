@@ -1,4 +1,7 @@
+"use client";
+
 import { IconDotGrid1x3VerticalTight, IconPlusSmall } from "central-icons";
+import { useQueryState } from "nuqs";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -9,6 +12,7 @@ import {
 } from "@/components/ui/table";
 import { Task } from "@/features/tasks/queries/types";
 import { TASK_STATUS_OPTIONS } from "../lib/constants";
+import { tasksSearchParams } from "../lib/search-params";
 import { TaskStatusBadge } from "./badges/task-status-badge";
 import { TaskItem } from "./task-item";
 
@@ -17,8 +21,35 @@ interface TasksListProps {
 }
 
 export function TasksList({ tasks }: TasksListProps) {
+  const [q] = useQueryState("q", tasksSearchParams.q);
+  const [statusFilter] = useQueryState("status", tasksSearchParams.status);
+  const [priorityFilter] = useQueryState(
+    "priority",
+    tasksSearchParams.priority,
+  );
+
+  // Filter tasks based on query params
+  const filteredTasks = tasks.filter((task) => {
+    // 1. Text Search Filter
+    if (q && !task.title.toLowerCase().includes(q.toLowerCase())) {
+      return false;
+    }
+
+    // 2. Status Filter
+    if (statusFilter !== "ALL" && task.status !== statusFilter) {
+      return false;
+    }
+
+    // 3. Priority Filter
+    if (priorityFilter !== "ALL" && task.priority !== priorityFilter) {
+      return false;
+    }
+
+    return true;
+  });
+
   // Group tasks by status
-  const groupedTasks = Object.groupBy(tasks, (task) => task.status);
+  const groupedTasks = Object.groupBy(filteredTasks, (task) => task.status);
 
   const statuses = TASK_STATUS_OPTIONS;
 

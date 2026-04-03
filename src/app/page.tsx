@@ -1,9 +1,25 @@
 import { IconArrowRight } from "central-icons";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { TasksEmptyState } from "@/features/tasks/components/tasks-empty-state";
 import { PATHS } from "@/lib/paths";
 
-export default function Home() {
+type HomePageProps = {
+  searchParams: Promise<{ simulate?: string }>;
+};
+
+export default async function Home({ searchParams }: HomePageProps) {
+  const { simulate } = await searchParams;
+
+  // DEV UTILS: Simulate empty state on home page
+  if (simulate === "empty") {
+    return (
+      <div className="flex flex-1 flex-col items-center justify-center p-4">
+        <TasksEmptyState />
+      </div>
+    );
+  }
+
   return (
     <div className="bg-background flex flex-1 flex-col items-center justify-center p-4">
       <div className="flex flex-col items-center gap-4 text-center text-balance">

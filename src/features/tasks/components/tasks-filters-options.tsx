@@ -7,6 +7,7 @@ import {
   IconUserGroup,
 } from "central-icons";
 import { Button } from "@/components/ui/button";
+import { TaskSearch } from "./task-search";
 import { TasksFilters } from "./tasks-filters";
 
 const FILTER_OPTIONS = [
@@ -34,31 +35,34 @@ const FILTER_OPTIONS = [
 
 export function TaskFiltersOptions() {
   return (
-    <div className="flex items-center gap-2">
-      {FILTER_OPTIONS.map((option) => {
-        let component;
-        if (option.component) {
-          component = option.component;
-        } else {
-          component = (
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-muted-foreground hidden font-mono text-xs tracking-wider lg:flex"
-              disabled={true}
-            >
-              {option.icon}
-              <span>{option.label}</span>
-            </Button>
-          );
-        }
+    <div className="flex items-center gap-4">
+      <TaskSearch />
+      <div className="flex items-center gap-2">
+        {FILTER_OPTIONS.map((option) => {
+          let component;
+          if (option.component) {
+            component = option.component;
+          } else {
+            component = (
+              <Button
+                variant="outline"
+                size="sm"
+                className="text-muted-foreground hidden font-mono text-xs tracking-wider lg:flex"
+                disabled={true}
+              >
+                {option.icon}
+                <span>{option.label}</span>
+              </Button>
+            );
+          }
 
-        return (
-          <div key={option.label} className="relative">
-            {component}
-          </div>
-        );
-      })}
+          return (
+            <div key={option.label} className="relative">
+              {component}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

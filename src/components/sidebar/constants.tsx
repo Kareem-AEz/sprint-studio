@@ -2,6 +2,7 @@ import {
   IconArchive1,
   IconArrowBoxLeft,
   IconCalender5,
+  IconExclamationTriangle,
   IconInboxEmpty,
   IconKanbanView,
   IconLayoutDashboard,
@@ -46,6 +47,11 @@ export const SIDEBAR_CONFIG = {
       url: "/calendar",
       icon: <IconCalender5 />,
       isUnderDev: true,
+    },
+    {
+      title: "Test Errors",
+      url: PATHS.TEST_ERROR.href(),
+      icon: <IconExclamationTriangle />,
     },
   ],
   projects: [

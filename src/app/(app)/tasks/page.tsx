@@ -1,4 +1,5 @@
 import { IconPlusSmall } from "central-icons";
+import Link from "next/link";
 import { Suspense } from "react";
 import { Heading } from "@/components/heading";
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
@@ -34,9 +35,14 @@ export default function Tasks() {
         <Heading
           title="Sprint Board"
           action={
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90">
-              <IconPlusSmall className="mr-1 size-5" />
-              New Task
+            <Button
+              asChild
+              className="bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              <Link href={PATHS.TASK_CREATE.href()}>
+                <IconPlusSmall className="mr-1 size-5" />
+                New Task
+              </Link>
             </Button>
           }
         />

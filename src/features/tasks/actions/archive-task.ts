@@ -3,9 +3,11 @@
 import { revalidatePath } from "next/cache";
 import z from "zod";
 import { getMe } from "@/features/auth/queries/get-me";
+import { TaskActivityType } from "@/generated/prisma/enums";
 import { PATHS } from "@/lib/paths";
 import prisma from "@/lib/prisma";
 import {
+  ActionState,
   toErrorActionState,
   toSuccessActionState,
 } from "@/response/action-state";
@@ -15,7 +17,7 @@ const actionSchema = z.object({
   taskId: z.string(),
 });
 
-export const archiveTask = async (taskId: string) => {
+export const archiveTask = async (taskId: string, _prevState: ActionState) => {
   try {
     const user = await getMe();
     if (!user) throw new Error("Unauthorized");
@@ -29,13 +31,26 @@ export const archiveTask = async (taskId: string) => {
     if (user.id !== task.creatorId)
       throw new Error("You are not the creator of this task");
 
-    await prisma.task.update({
-      where: { id: validatedData.data.taskId },
-      data: { archivedAt: new Date() },
+    await prisma.$transaction(async (tx) => {
+      await tx.task.update({
+        where: { id: validatedData.data.taskId },
+        data: {
+          archivedAt: new Date(),
+        },
+      });
+
+      await tx.taskActivity.create({
+        data: {
+          type: TaskActivityType.TASK_ARCHIVED,
+          userId: user.id,
+          taskId: validatedData.data.taskId,
+        },
+      });
     });
 
     revalidatePath(PATHS.TASK_DETAILS.href(validatedData.data.taskId));
     revalidatePath(PATHS.TASKS.href());
+
     return toSuccessActionState("Task archived successfully");
   } catch (error) {
     return toErrorActionState(error);

@@ -5,6 +5,7 @@ import { TaskStatusBadge } from "../badges/task-status-badge";
 import { TaskArchive } from "../buttons/task-archive";
 import { TaskEdit } from "../buttons/task-edit";
 import { TaskIcon } from "../task-icon";
+import { TaskDevUtils } from "./task-dev-utils";
 
 interface TaskDetailsHeaderProps {
   task: Task;
@@ -19,6 +20,7 @@ export function TaskDetailsHeader({ task }: TaskDetailsHeaderProps) {
         <div className="flex items-center gap-3">
           <TaskIcon taskKey={task.taskKey} />
           <span className="text-muted-foreground text-lg">{task.taskKey}</span>
+          <TaskDevUtils />
         </div>
 
         {/* Action Buttons */}

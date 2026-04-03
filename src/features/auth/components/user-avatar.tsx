@@ -50,10 +50,13 @@ export function UserAvatar({
   const initials = getInitials(name);
 
   return (
-    <Avatar className={cn("size-8 rounded-full text-xs", className)}>
+    <Avatar className={cn("size-8 rounded-full", className)}>
       <AvatarImage src={image ?? undefined} alt={name} />
       <AvatarFallback
-        className={cn("font-semibold text-white", fallbackClassName)}
+        className={cn(
+          "font-bold text-white text-[11px] uppercase tracking-tighter",
+          fallbackClassName
+        )}
         style={{ backgroundColor }}
       >
         {initials}

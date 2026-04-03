@@ -28,12 +28,14 @@ export const toErrorActionState = (error: unknown): ActionState<unknown> => {
       status: "ERROR",
       error: error.message,
       timestamp: Date.now(),
+      message: error.message,
     };
   } else {
     return {
       status: "ERROR",
       error: "An unknown error occurred",
       timestamp: Date.now(),
+      message: "An unknown error occurred",
     };
   }
 };

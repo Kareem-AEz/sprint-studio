@@ -8,6 +8,7 @@ import { TaskDetailsHeader } from "@/features/tasks/components/task-details/task
 import { TaskDetailsSidebar } from "@/features/tasks/components/task-details/task-details-sidebar";
 import { TaskError } from "@/features/tasks/components/task-error";
 import { TaskNotFound } from "@/features/tasks/components/task-not-found";
+import { TasksEmptyState } from "@/features/tasks/components/tasks-empty-state";
 import { getTaskById } from "@/features/tasks/queries/get-task-by-id";
 import { PATHS } from "@/lib/paths";
 
@@ -32,9 +33,17 @@ export default async function TaskDetailsPage({
   searchParams,
 }: TaskDetailsPageProps) {
   const { taskId } = await params;
+  const sp = await searchParams;
   await activitySearchParamsCache.parse(searchParams);
 
   try {
+    // Simulate not found if requested
+    if (sp.simulate === "not-found") return <TaskNotFound taskId={taskId} />;
+    // Simulate error if requested
+    if (sp.simulate === "error") throw new Error("Simulated Server Error in Task Details");
+    // Simulate empty state if requested
+    if (sp.simulate === "empty") return <TasksEmptyState />;
+
     const task = await getTaskById(taskId);
 
     // We're using a server component to handle the not found state, because the not-found.tsx page is crashing the routing system
