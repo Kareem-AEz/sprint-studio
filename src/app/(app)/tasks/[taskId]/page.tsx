@@ -1,7 +1,9 @@
 import { Suspense } from "react";
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
 import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ActivityDetails } from "@/features/activity/components/activity-details";
+import { ActivitySkeleton } from "@/features/activity/components/activity-skeleton";
 import { activitySearchParamsCache } from "@/features/activity/lib/search-params";
 import { TaskDetailsContent } from "@/features/tasks/components/task-details/task-details-content";
 import { TaskDetailsHeader } from "@/features/tasks/components/task-details/task-details-header";
@@ -108,7 +110,7 @@ export default async function TaskDetailsPage({
 
           {/* Task Details Activity */}
           <div className="flex flex-1">
-            <Suspense fallback={<div className="bg-muted h-6 w-24 rounded" />}>
+            <Suspense fallback={<ActivitySkeleton />}>
               <ActivityDetails taskId={taskId} />
             </Suspense>
           </div>
@@ -118,21 +120,21 @@ export default async function TaskDetailsPage({
         <aside className="hidden shrink-0 basis-1/4 md:flex">
           <Suspense
             fallback={
-              <div className="flex flex-1 animate-pulse flex-col gap-12 border-l p-4 pt-0">
-                <div className="bg-muted mb-8 h-6 w-32 rounded" />
+              <div className="flex flex-1 flex-col gap-12 border-l p-4 py-8">
+                <Skeleton className="mb-8 h-6 w-32" />
                 <div className="flex flex-col gap-8 border-b pb-8">
                   {[...Array(4)].map((_, idx) => (
                     <div className="flex flex-col gap-2" key={idx}>
-                      <div className="bg-muted h-4 w-16 rounded" />
-                      <div className="bg-muted h-6 w-full rounded" />
+                      <Skeleton className="h-4 w-16" />
+                      <Skeleton className="h-6 w-full" />
                     </div>
                   ))}
                 </div>
                 <div className="mt-8 flex flex-col gap-4">
                   {[...Array(4)].map((_, idx) => (
                     <div className="flex flex-col justify-between" key={idx}>
-                      <div className="bg-muted/60 mb-1 h-3 w-14 rounded" />
-                      <div className="bg-muted h-4 w-24 rounded" />
+                      <Skeleton className="mb-1 h-3 w-14 opacity-60" />
+                      <Skeleton className="h-4 w-24" />
                     </div>
                   ))}
                 </div>
