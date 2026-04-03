@@ -1,11 +1,13 @@
 {
   "scopePatterns": [
-    { "pattern": "src/app/([^/]+)/.*", "scope": "$1", "weight": 10 },
+    { "pattern": "src/features/([^/]+)/.*", "scope": "$1", "weight": 10 },
+    { "pattern": "src/app/([^/]+)/.*", "scope": "$1", "weight": 8 },
     { "pattern": "package(-lock)?\\.json", "scope": "deps", "weight": 7 },
     { "pattern": "\\.gitignore", "scope": "git", "weight": 7 },
     { "pattern": "README\\.md", "scope": "docs", "weight": 7 },
     { "pattern": "\\.env.*", "scope": "env", "weight": 7 },
     { "pattern": "src/([^/]+)/.*", "scope": "$1", "weight": 6 },
+    { "pattern": "prisma/.*", "scope": "db", "weight": 5 },
     { "pattern": "public/.*", "scope": "public", "weight": 5 },
     {
       "pattern": "(next\\.config\\.ts|postcss\\.config\\.mjs|eslint\\.config\\.mjs|tsconfig\\.json)",
@@ -13,5 +15,6 @@
       "weight": 3
     },
     { "pattern": "\\.agents/.*", "scope": "agents", "weight": 3 }
-  ]
+  ],
+  "exclude": [".next/", "out/", "build/", "src/generated/prisma"]
 }
