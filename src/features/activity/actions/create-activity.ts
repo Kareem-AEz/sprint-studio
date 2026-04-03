@@ -38,7 +38,9 @@ export async function createActivity(formData: FormData) {
       },
     });
     revalidatePath(PATHS.TASK_DETAILS.href(taskId));
-    return toSuccessActionState("Comment added successfully");
+    return toSuccessActionState({
+      message: "Comment added successfully",
+    });
   } catch (error) {
     return toErrorActionState(error);
   }

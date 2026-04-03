@@ -51,7 +51,9 @@ export const archiveTask = async (taskId: string, _prevState: ActionState) => {
     revalidatePath(PATHS.TASK_DETAILS.href(validatedData.data.taskId));
     revalidatePath(PATHS.TASKS.href());
 
-    return toSuccessActionState("Task archived successfully");
+    return toSuccessActionState({
+      message: "Task archived successfully",
+    });
   } catch (error) {
     return toErrorActionState(error);
   }
