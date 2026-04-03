@@ -53,7 +53,7 @@ export function AssigneeSelect({
           <Button
             variant="outline"
             role="combobox"
-            className="bg-input/50 hover:bg-input/70 h-auto min-h-9 w-full justify-between rounded-3xl border-transparent px-3 py-2"
+            className="bg-input/50 dark:bg-input/50 hover:bg-input/70 h-auto min-h-9 w-full justify-between rounded-lg border-transparent px-3 py-2"
           >
             <div className="flex flex-wrap items-center gap-1.5 overflow-hidden text-left">
               {selectedUsers.length > 0 ? (
@@ -61,25 +61,28 @@ export function AssigneeSelect({
                   <Badge
                     key={user.id}
                     variant="secondary"
-                    className="bg-background/50 hover:bg-background/80 flex h-7 items-center gap-1.5 rounded-full border-none pl-1 pr-2 py-0 transition-colors"
+                    className="bg-background/50 hover:bg-background/80 flex h-7 items-center gap-1.5 rounded-full border-none py-0 pr-2 pl-1 transition-colors"
                   >
-                    <UserAvatar name={user.name} className="size-5 text-[10px]" />
+                    <UserAvatar name={user.name} className="size-5" />
+
                     <span className="text-xs font-medium">{user.name}</span>
                     <IconCrossSmall
-                      className="size-3 cursor-pointer opacity-60 hover:opacity-100 transition-opacity"
+                      className="size-3 cursor-pointer opacity-60 transition-opacity hover:opacity-100"
                       onClick={(e) => handleRemove(user.id, e)}
                     />
                   </Badge>
                 ))
               ) : (
-                <span className="text-muted-foreground ml-1">{placeholder}</span>
+                <span className="text-muted-foreground ml-1">
+                  {placeholder}
+                </span>
               )}
             </div>
             <IconChevronGrabberVertical className="size-4 shrink-0 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="max-h-72 w-64 overflow-y-auto rounded-2xl p-1"
+          className="max-h-72 w-64 overflow-y-auto rounded-lg p-1"
           align="start"
         >
           {users.map((user) => (
@@ -88,9 +91,13 @@ export function AssigneeSelect({
               checked={value.includes(user.id)}
               onCheckedChange={() => handleToggle(user.id)}
               onSelect={(e) => e.preventDefault()}
-              className="flex items-center gap-2 rounded-xl py-2"
+              className="flex items-center gap-3 rounded-lg py-2"
             >
-              <UserAvatar name={user.name} className="size-6 text-[10px]" />
+              <UserAvatar
+                name={user.name}
+                className="size-7"
+                textClassName="text-xs"
+              />
               <span className="flex-1 truncate">{user.name}</span>
             </DropdownMenuCheckboxItem>
           ))}

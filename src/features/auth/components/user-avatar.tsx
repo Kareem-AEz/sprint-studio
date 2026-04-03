@@ -1,7 +1,8 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
+import { getAvatarColor } from "@/lib/colors";
 import { cn } from "@/lib/utils";
-import { getAvatarColor, getInitials } from "../utils/avatar-color";
+import { getInitials } from "../utils/avatar-color";
 
 interface UserAvatarProps {
   /**
@@ -24,6 +25,10 @@ interface UserAvatarProps {
    * Optional CSS class name for the fallback initials.
    */
   fallbackClassName?: string;
+  /**
+   * Optional CSS class name for the fallback text.
+   */
+  textClassName?: string;
 }
 
 /**
@@ -37,6 +42,7 @@ export function UserAvatar({
   isLoading,
   className,
   fallbackClassName,
+  textClassName,
 }: UserAvatarProps) {
   if (isLoading) {
     return <Skeleton className={cn("size-8 rounded-full", className)} />;
@@ -53,13 +59,17 @@ export function UserAvatar({
     <Avatar className={cn("size-8 rounded-full", className)}>
       <AvatarImage src={image ?? undefined} alt={name} />
       <AvatarFallback
-        className={cn(
-          "font-bold text-white text-[11px] uppercase tracking-tighter",
-          fallbackClassName
-        )}
+        className={cn("", fallbackClassName)}
         style={{ backgroundColor }}
       >
-        {initials}
+        <span
+          className={cn(
+            "text-background dark:text-background text-[8px] tracking-tighter uppercase",
+            textClassName,
+          )}
+        >
+          {initials}
+        </span>
       </AvatarFallback>
     </Avatar>
   );

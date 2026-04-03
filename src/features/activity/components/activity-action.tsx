@@ -41,15 +41,13 @@ export function ActivityAction({
 
       {/* Small Circle Indicator Container */}
       <div className="relative z-10 flex h-8 w-8 items-center justify-center">
-        <div className="border-muted-foreground/30 h-2.5 w-2.5 rounded-full border-2 bg-background shadow-sm" />
+        <div className="border-muted-foreground/30 bg-background h-2.5 w-2.5 rounded-full border-2 shadow-sm" />
       </div>
 
       {/* Action Content */}
-      <div className="flex flex-1 items-baseline gap-2 pt-1.5">
-        <div className="text-sm leading-none text-foreground">
-          {children}
-        </div>
-        <span className="text-muted-foreground text-xs whitespace-nowrap">
+      <div className="flex flex-1 items-start gap-2 pt-1.5">
+        <div className="text-foreground flex-1 text-sm">{children}</div>
+        <span className="text-muted-foreground pt-0.5 text-xs whitespace-nowrap">
           {formatRelativeTime(createdAt)}
         </span>
       </div>

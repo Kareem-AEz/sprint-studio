@@ -55,7 +55,7 @@ export function CategorySelect({
           <Button
             variant="outline"
             role="combobox"
-            className="bg-input/50 hover:bg-input/70 w-full justify-between rounded-3xl border-transparent"
+            className="bg-input/50 dark:bg-input/50 hover:bg-input/70 w-full justify-between rounded-lg border-transparent"
           >
             {displayValue || (
               <span className="text-muted-foreground">{placeholder}</span>
@@ -63,12 +63,12 @@ export function CategorySelect({
             <IconChevronGrabberVertical className="size-4 shrink-0 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-64 rounded-2xl p-2" align="start">
+        <DropdownMenuContent className="w-64 rounded-lg p-2" align="start">
           <Input
             placeholder="Search or create category..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="bg-background border-input mb-2"
+            className="bg-input/50 border-input mb-2"
           />
           <div className="flex max-h-60 flex-col gap-1 overflow-y-auto">
             {filteredCategories.map((category) => (

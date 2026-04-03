@@ -16,7 +16,6 @@ export const getMe = cache(async () => {
     const user = await prisma.user.findUnique({
       where: { email },
     });
-    console.log("user", user);
 
     // Simulate a delay
     await new Promise((resolve) => setTimeout(resolve, 1000));

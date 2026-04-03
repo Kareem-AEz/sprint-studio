@@ -18,7 +18,6 @@ const schema = activityCommentFormSchema.extend({
 
 export async function createActivity(formData: FormData) {
   try {
-    console.log("createActivity", formData);
     const user = await getMe();
     if (!user) {
       throw new Error("Unauthorized");

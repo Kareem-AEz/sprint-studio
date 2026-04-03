@@ -34,8 +34,8 @@ export function DateSelect({
             id="date"
             variant={"outline"}
             className={cn(
-              "bg-input/50 border-transparent hover:bg-input/70 h-9 w-full justify-start rounded-3xl px-3 text-left font-normal",
-              !value && "text-muted-foreground"
+              "bg-input/50 hover:bg-input/70 h-9 w-full justify-start border-transparent px-3 text-left font-normal",
+              !value && "text-muted-foreground",
             )}
           >
             <IconCalendar1 className="mr-2 size-4" />
@@ -53,9 +53,9 @@ export function DateSelect({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0 rounded-2xl" align="start">
+        <PopoverContent className="w-auto rounded-lg p-0" align="start">
           <Calendar
-            initialFocus
+            autoFocus
             mode="range"
             defaultMonth={value?.from}
             selected={value}

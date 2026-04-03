@@ -4,15 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   Field,
   FieldContent,
@@ -20,17 +12,21 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { TaskPriority, TaskStatus } from "@/generated/prisma/enums";
+import { useToast } from "@/hooks/use-toast";
 import { PATHS } from "@/lib/paths";
 import { ActionState, EMPTY_ACTION_STATE } from "@/response/action-state";
 import { useActionFeedback } from "@/response/hooks/use-action-feedback";
 import { upsertTask } from "../../actions/upsert-task";
-import {
-  TASK_PRIORITY_OPTIONS,
-  TASK_STATUS_OPTIONS,
-} from "../../lib/constants";
 import { TaskFormSchema, taskFormSchema } from "../../schemas";
 import { AssigneeSelect } from "./assignee-select";
 import { CategorySelect } from "./category-select";
@@ -43,6 +39,7 @@ interface TaskFormProps {
 }
 
 export function TaskForm({ initialData, users, categories }: TaskFormProps) {
+  const { toast } = useToast();
   const router = useRouter();
   const form = useForm<TaskFormSchema>({
     resolver: zodResolver(taskFormSchema),
@@ -51,12 +48,11 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
       description: initialData?.description ?? "",
       assigneeIds: initialData?.assigneeIds ?? [],
       status: initialData?.status ?? TaskStatus.BACKLOG,
-      priority: initialData?.priority ?? TaskPriority.LOW,
+      priority: initialData?.priority ?? TaskPriority.MEDIUM,
       categoryId: initialData?.categoryId ?? "",
       startDate: initialData?.startDate ?? null,
       dueDate: initialData?.dueDate ?? null,
     },
-    mode: "onChange",
   });
 
   const [actionState, formAction, isPending] = useActionState(
@@ -67,12 +63,15 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
 
   useActionFeedback(actionState, {
     onSuccess: ({ actionState }) => {
-      toast.success(actionState.message);
+      toast.success(actionState.message ?? "Task saved successfully", {
+        key: "task-saved",
+      });
       router.push(PATHS.TASKS.href());
-      router.refresh();
     },
     onError: ({ actionState }) => {
-      toast.error(actionState.error ?? "Something went wrong");
+      toast.error(actionState.error ?? "Failed to save task", {
+        key: "task-error",
+      });
     },
   });
 
@@ -82,60 +81,53 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
         const isValid = await form.trigger();
         if (!isValid) return;
 
-        // Append controlled fields
-        formData.set(
-          "assigneeIds",
-          JSON.stringify(form.getValues("assigneeIds")),
-        );
-
         startTransition(() => {
           formAction(formData);
         });
       }}
-      className="flex w-full flex-1 flex-col gap-6"
+      className="flex flex-col gap-6"
     >
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2">
         {/* Title */}
-        <div className="md:col-span-2">
-          <Controller
-            control={form.control}
-            name="title"
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>Title</FieldLabel>
-                <FieldContent>
-                  <Input
-                    {...field}
-                    placeholder="Task title"
-                    autoComplete="off"
-                  />
-                  <FieldError errors={[fieldState.error]} />
-                </FieldContent>
-              </Field>
-            )}
-          />
-        </div>
+        <Controller
+          control={form.control}
+          name="title"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="md:col-span-2">
+              <FieldLabel>Title</FieldLabel>
+              <FieldContent>
+                <Input
+                  {...field}
+                  placeholder="Task title"
+                  autoComplete="off"
+                  className="bg-input/50 rounded-lg border-transparent"
+                  aria-invalid={fieldState.invalid}
+                />
+                <FieldError errors={[fieldState.error]} />
+              </FieldContent>
+            </Field>
+          )}
+        />
 
         {/* Description */}
-        <div className="md:col-span-2">
-          <Controller
-            control={form.control}
-            name="description"
-            render={({ field, fieldState }) => (
-              <Field data-invalid={fieldState.invalid}>
-                <FieldLabel>Description</FieldLabel>
-                <FieldContent>
-                  <Textarea
-                    {...field}
-                    placeholder="Task description"
-                    className="min-h-48"
-                  />
-                  <FieldError errors={[fieldState.error]} />
-                </FieldContent>
-              </Field>
-            )}
-          />
-        </div>
+        <Controller
+          control={form.control}
+          name="description"
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid} className="md:col-span-2">
+              <FieldLabel>Description</FieldLabel>
+              <FieldContent>
+                <Textarea
+                  {...field}
+                  placeholder="Task description"
+                  className="bg-input/50 h-full min-h-48 rounded-lg border-transparent"
+                  aria-invalid={fieldState.invalid}
+                />
+                <FieldError errors={[fieldState.error]} />
+              </FieldContent>
+            </Field>
+          )}
+        />
 
         {/* Category */}
         <Controller
@@ -170,6 +162,11 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
                   value={field.value}
                   onChange={field.onChange}
                 />
+                <input
+                  type="hidden"
+                  name="assigneeIds"
+                  value={JSON.stringify(field.value)}
+                />
                 <FieldError errors={[fieldState.error]} />
               </FieldContent>
             </Field>
@@ -184,33 +181,22 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel>Status</FieldLabel>
               <FieldContent>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="bg-input/50 hover:bg-input/70 w-full justify-start rounded-3xl border-transparent"
-                    >
-                      {field.value}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 rounded-2xl">
-                    <DropdownMenuRadioGroup
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      {TASK_STATUS_OPTIONS.map((status) => (
-                        <DropdownMenuRadioItem
-                          key={status}
-                          value={status}
-                          className="rounded-xl"
-                        >
-                          {status}
-                        </DropdownMenuRadioItem>
-                      ))}
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <input type="hidden" name="status" value={field.value} />
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  name="status"
+                >
+                  <SelectTrigger className="bg-input/50 h-9 w-full rounded-lg border-transparent">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg">
+                    {Object.values(TaskStatus).map((status) => (
+                      <SelectItem key={status} value={status}>
+                        {status.charAt(0) + status.slice(1).toLowerCase()}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FieldError errors={[fieldState.error]} />
               </FieldContent>
             </Field>
@@ -225,79 +211,74 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel>Priority</FieldLabel>
               <FieldContent>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="bg-input/50 hover:bg-input/70 w-full justify-start rounded-3xl border-transparent"
-                    >
-                      {field.value}
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56 rounded-2xl">
-                    <DropdownMenuRadioGroup
-                      value={field.value}
-                      onValueChange={field.onChange}
-                    >
-                      {TASK_PRIORITY_OPTIONS.map((priority) => (
-                        <DropdownMenuRadioItem
-                          key={priority}
-                          value={priority}
-                          className="rounded-xl"
-                        >
-                          {priority}
-                        </DropdownMenuRadioItem>
-                      ))}
-                    </DropdownMenuRadioGroup>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                <input type="hidden" name="priority" value={field.value} />
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  name="priority"
+                >
+                  <SelectTrigger className="bg-input/50 h-9 w-full rounded-lg border-transparent">
+                    <SelectValue placeholder="Select priority" />
+                  </SelectTrigger>
+                  <SelectContent className="rounded-lg">
+                    {Object.values(TaskPriority).map((priority) => (
+                      <SelectItem key={priority} value={priority}>
+                        {priority.charAt(0) + priority.slice(1).toLowerCase()}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FieldError errors={[fieldState.error]} />
               </FieldContent>
             </Field>
           )}
         />
 
-        {/* Date Range */}
-        <div className="md:col-span-2">
-          <Field>
-            <FieldLabel>Dates</FieldLabel>
-            <FieldContent>
-              <DateSelect
-                value={{
-                  from: form.watch("startDate") ?? undefined,
-                  to: form.watch("dueDate") ?? undefined,
-                }}
-                onChange={(range) => {
-                  form.setValue("startDate", range?.from ?? null);
-                  form.setValue("dueDate", range?.to ?? null);
-                }}
-              />
-              <input
-                type="hidden"
-                name="startDate"
-                value={form.watch("startDate")?.toISOString() ?? ""}
-              />
-              <input
-                type="hidden"
-                name="dueDate"
-                value={form.watch("dueDate")?.toISOString() ?? ""}
-              />
-            </FieldContent>
-          </Field>
-        </div>
+        {/* Dates */}
+        <Controller
+          control={form.control}
+          name="startDate"
+          render={({ field: startField }) => (
+            <Controller
+              control={form.control}
+              name="dueDate"
+              render={({ field: dueField, fieldState }) => (
+                <Field
+                  data-invalid={fieldState.invalid}
+                  className="md:col-span-2"
+                >
+                  <FieldLabel>Dates</FieldLabel>
+                  <FieldContent>
+                    <DateSelect
+                      value={{
+                        from: startField.value ?? undefined,
+                        to: dueField.value ?? undefined,
+                      }}
+                      onChange={(range) => {
+                        startField.onChange(range?.from ?? null);
+                        dueField.onChange(range?.to ?? null);
+                      }}
+                    />
+                    <input
+                      type="hidden"
+                      name="startDate"
+                      value={startField.value?.toISOString() ?? ""}
+                    />
+                    <input
+                      type="hidden"
+                      name="dueDate"
+                      value={dueField.value?.toISOString() ?? ""}
+                    />
+                    <FieldError errors={[fieldState.error]} />
+                  </FieldContent>
+                </Field>
+              )}
+            />
+          )}
+        />
       </div>
 
-      <div className="mt-6 flex items-center justify-end gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => router.back()}
-          disabled={isPending}
-        >
-          Cancel
-        </Button>
-        <Button disabled={isPending}>
+      <div className="flex justify-end gap-3 pt-4">
+        <Button type="submit" disabled={isPending}>
           {isPending && <Spinner data-icon="inline-start" />}
           {initialData?.id ? "Update Task" : "Create Task"}
         </Button>

@@ -1,5 +1,6 @@
 "use client";
 
+import { IconArrowPathRight } from "central-icons";
 import { useQueryState } from "nuqs";
 import { TaskPriorityBadge } from "@/features/tasks/components/badges/task-priority-badge";
 import { TaskStatusBadge } from "@/features/tasks/components/badges/task-status-badge";
@@ -66,14 +67,28 @@ export function ActivityContent({ activities }: ActivityContentProps) {
                 createdAt={activity.createdAt}
                 isLast={isLast}
               >
-                <span className="font-semibold">{activity.user.name}</span>{" "}
-                <span className="text-muted-foreground">changed status to</span>{" "}
-                {activity.newValue && (
-                  <TaskStatusBadge
-                    status={activity.newValue as TaskStatus}
-                    className="scale-90"
-                  />
-                )}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="font-semibold">{activity.user.name}</span>{" "}
+                  <span className="text-muted-foreground">changed status</span>
+                  {activity.oldValue && (
+                    <>
+                      <span className="text-muted-foreground">from</span>
+                      <TaskStatusBadge
+                        status={activity.oldValue as TaskStatus}
+                        className="scale-90"
+                      />
+                    </>
+                  )}
+                  <span className="text-muted-foreground">
+                    <IconArrowPathRight className="size-4" />
+                  </span>
+                  {activity.newValue && (
+                    <TaskStatusBadge
+                      status={activity.newValue as TaskStatus}
+                      className="scale-90"
+                    />
+                  )}
+                </div>
               </ActivityAction>
             );
 
@@ -84,17 +99,32 @@ export function ActivityContent({ activities }: ActivityContentProps) {
                 createdAt={activity.createdAt}
                 isLast={isLast}
               >
-                <span className="font-semibold">{activity.user.name}</span>{" "}
-                <span className="text-muted-foreground">
-                  changed priority to
-                </span>{" "}
-                {activity.newValue && (
-                  <TaskPriorityBadge
-                    priority={activity.newValue as TaskPriority}
-                    variant="badge"
-                    className="scale-90"
-                  />
-                )}
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="font-semibold">{activity.user.name}</span>{" "}
+                  <span className="text-muted-foreground">
+                    changed priority
+                  </span>
+                  {activity.oldValue && (
+                    <>
+                      <span className="text-muted-foreground">from</span>
+                      <TaskPriorityBadge
+                        priority={activity.oldValue as TaskPriority}
+                        variant="badge"
+                        className="scale-90"
+                      />
+                    </>
+                  )}
+                  <span className="text-muted-foreground">
+                    <IconArrowPathRight className="size-4" />
+                  </span>
+                  {activity.newValue && (
+                    <TaskPriorityBadge
+                      priority={activity.newValue as TaskPriority}
+                      variant="badge"
+                      className="scale-90"
+                    />
+                  )}
+                </div>
               </ActivityAction>
             );
 
