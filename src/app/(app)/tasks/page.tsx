@@ -22,6 +22,8 @@ const breadcrumbs = [
   },
 ];
 
+export const dynamic = "force-dynamic";
+
 export default function Tasks() {
   return (
     <div className="bg-background flex min-w-0 flex-1 flex-col gap-4 p-2 md:p-4 lg:p-8">
