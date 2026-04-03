@@ -258,6 +258,16 @@ async function main() {
             userId: ali.id,
             content: "Sarah assigned to documentation",
           },
+          {
+            type: TaskActivityType.COMMENT_ADDED,
+            userId: ali.id,
+            content: "Comment added by Ali",
+          },
+          {
+            type: TaskActivityType.COMMENT_ADDED,
+            userId: ali.id,
+            content: "Comment added by Ali",
+          },
         ],
       },
     },

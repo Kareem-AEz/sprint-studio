@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import { Breadcrumbs } from "@/components/navigation/breadcrumbs";
 import { Separator } from "@/components/ui/separator";
 import { ActivityDetails } from "@/features/activity/components/activity-details";
+import { activitySearchParamsCache } from "@/features/activity/lib/search-params";
 import { TaskDetailsContent } from "@/features/tasks/components/task-details/task-details-content";
 import { TaskDetailsHeader } from "@/features/tasks/components/task-details/task-details-header";
 import { TaskDetailsSidebar } from "@/features/tasks/components/task-details/task-details-sidebar";
@@ -23,12 +24,15 @@ const breadcrumbs = [
 
 type TaskDetailsPageProps = {
   params: Promise<{ taskId: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
 export default async function TaskDetailsPage({
   params,
+  searchParams,
 }: TaskDetailsPageProps) {
   const { taskId } = await params;
+  await activitySearchParamsCache.parse(searchParams);
 
   try {
     const task = await getTaskById(taskId);
@@ -47,7 +51,7 @@ export default async function TaskDetailsPage({
         {/* Task Details Layout */}
         <div className="bg-card flex min-w-0 flex-1 flex-row gap-6 rounded-lg border">
           {/* Task Details Content */}
-          <div className="flex basis-3/4 flex-col gap-12 p-4 md:p-6">
+          <div className="flex flex-1 flex-col gap-12 p-4 md:basis-3/4 md:p-6">
             {/* Task Details Header and Content */}
             <div className="flex flex-col gap-8">
               <div>
@@ -62,13 +66,17 @@ export default async function TaskDetailsPage({
             <Separator />
 
             {/* Task Details Activity */}
-            <div className="basis-1/2 border border-red-600">
-              <ActivityDetails />
+            <div className="flex flex-1">
+              <Suspense
+                fallback={<div className="bg-muted h-6 w-24 rounded" />}
+              >
+                <ActivityDetails taskId={taskId} />
+              </Suspense>
             </div>
           </div>
 
           {/* Task Details Sidebar */}
-          <aside className="flex shrink-0 basis-1/4">
+          <aside className="hidden shrink-0 basis-1/4 md:flex">
             <Suspense
               fallback={
                 <div className="flex flex-1 animate-pulse flex-col gap-12 border-l p-4 pt-0">

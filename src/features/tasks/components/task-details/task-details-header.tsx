@@ -22,9 +22,9 @@ export function TaskDetailsHeader({ task }: TaskDetailsHeaderProps) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2">
-          <TaskEdit taskId={task.id} variant="outline" size="default" />
-          <TaskArchive taskId={task.id} variant="destructive" size="default" />
+        <div className="flex hidden items-center gap-2 md:flex">
+          <TaskEdit taskId={task.id} variant="outline" size="sm" />
+          <TaskArchive taskId={task.id} variant="destructive" size="sm" />
         </div>
       </div>
 
