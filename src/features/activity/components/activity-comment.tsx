@@ -39,7 +39,7 @@ export function ActivityComment({
       {/* Vertical line (timeline connector) */}
       {!isLast && (
         <div
-          className="bg-border/40 absolute top-9 bottom-0 left-[15px] w-[1.5px]"
+          className="bg-border/80 absolute top-9 bottom-0 left-[15px] w-[1.5px]"
           aria-hidden="true"
         />
       )}
