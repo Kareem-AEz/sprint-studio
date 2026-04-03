@@ -16,7 +16,7 @@ export const EMPTY_ACTION_STATE: ActionState<unknown> = {
   timestamp: Date.now(),
 };
 
-export const toErrorActionState = (error: unknown): ActionState<unknown> => {
+export const toErrorActionState = <T = unknown>(error: unknown): ActionState<T> => {
   if (error instanceof ZodError) {
     return {
       status: "ERROR",
@@ -40,10 +40,19 @@ export const toErrorActionState = (error: unknown): ActionState<unknown> => {
   }
 };
 
-export const toSuccessActionState = (message: string): ActionState<unknown> => {
+type ToSuccessActionStateProps<T = unknown> = {
+  message: string;
+  data?: T;
+};
+
+export const toSuccessActionState = <T = unknown>({
+  message,
+  data,
+}: ToSuccessActionStateProps<T>): ActionState<T> => {
   return {
     status: "SUCCESS",
     message,
+    data,
     timestamp: Date.now(),
   };
 };

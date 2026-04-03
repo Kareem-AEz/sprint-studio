@@ -1,13 +1,5 @@
-import { IconDotGrid1x3VerticalTight } from "central-icons";
 import Link from "next/link";
 import { AvatarGroup } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { UserAvatar } from "@/features/auth/components/user-avatar";
 import { Task } from "@/features/tasks/queries/types";
@@ -16,8 +8,7 @@ import { cn } from "@/lib/utils";
 import { formatDate } from "../utils/format";
 import { TaskCategoryBadge } from "./badges/task-category-badge";
 import { TaskPriorityBadge } from "./badges/task-priority-badge";
-import { TaskArchive } from "./buttons/task-archive";
-import { TaskEdit } from "./buttons/task-edit";
+import { TaskActions } from "./task-actions";
 import { TaskIcon } from "./task-icon";
 
 interface TaskItemProps {
@@ -113,28 +104,7 @@ export function TaskItem({ task }: TaskItemProps) {
 
       {/* Task Actions */}
       <TableCell className="relative z-10 w-12 px-4 text-right">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8 opacity-0 group-hover:opacity-100"
-              aria-label="Task Actions"
-            >
-              <IconDotGrid1x3VerticalTight className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild>
-              <TaskEdit taskId={task.id} className="w-full" />
-            </DropdownMenuItem>
-
-            <DropdownMenuItem asChild>
-              <TaskArchive taskId={task.id} className="w-full" />
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <TaskActions taskId={task.id} />
       </TableCell>
     </TableRow>
   );

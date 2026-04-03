@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getMe } from "@/features/auth/queries/get-me";
+import { Task } from "@/generated/prisma/client";
 import { TaskActivityType } from "@/generated/prisma/enums";
 import { PATHS } from "@/lib/paths";
 import prisma from "@/lib/prisma";
@@ -16,7 +17,7 @@ export const upsertTask = async (
   _prevState: ActionState,
   formData: FormData,
   taskId?: string,
-): Promise<ActionState> => {
+): Promise<ActionState<Task>> => {
   try {
     const user = await getMe();
     if (!user) throw new Error("Unauthorized");
@@ -46,7 +47,7 @@ export const upsertTask = async (
     });
 
     if (!validatedData.success) {
-      return toErrorActionState(new Error("Invalid data"));
+      throw new Error("Invalid data");
     }
 
     const {
@@ -72,7 +73,7 @@ export const upsertTask = async (
       finalCategoryId = existingCategory.id;
     }
 
-    let task;
+    let task: Task;
     if (taskId) {
       // Update
       const existingTask = await prisma.task.findUnique({
@@ -157,13 +158,18 @@ export const upsertTask = async (
     }
 
     revalidatePath(PATHS.TASKS.href());
+
     if (taskId) {
       revalidatePath(PATHS.TASK_DETAILS.href(taskId));
+      revalidatePath(PATHS.TASKS.href());
     }
 
-    return toSuccessActionState(
-      taskId ? "Task updated successfully" : "Task created successfully",
-    );
+    return toSuccessActionState({
+      message: taskId
+        ? "Task updated successfully"
+        : "Task created successfully",
+      data: task,
+    });
   } catch (error) {
     return toErrorActionState(error);
   }

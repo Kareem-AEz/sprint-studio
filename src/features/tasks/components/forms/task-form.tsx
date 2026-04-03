@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useEffect, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -32,7 +32,7 @@ import { CategorySelect } from "./category-select";
 import { DateSelect } from "./date-select";
 
 interface TaskFormProps {
-  initialData?: Partial<TaskFormSchema> & { id?: string };
+  initialData?: Partial<TaskFormSchema> & { id: string };
   users: { id: string; name: string }[];
   categories: { id: string; name: string }[];
 }
@@ -41,6 +41,14 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
   const { toast } = useToast();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const taskId = initialData?.id ?? undefined;
+
+  useEffect(() => {
+    if (taskId) return router.prefetch(PATHS.TASK_DETAILS.href(taskId));
+
+    return router.prefetch(PATHS.TASKS.href());
+  }, [router, taskId]);
+
   const form = useForm<TaskFormSchema>({
     resolver: zodResolver(taskFormSchema),
     defaultValues: {
@@ -71,7 +79,11 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
             toast.success(result.message ?? "Task saved successfully", {
               key: "task-saved",
             });
-            router.push(PATHS.TASKS.href());
+            if (taskId) {
+              router.push(PATHS.TASK_DETAILS.href(taskId));
+            } else {
+              router.push(PATHS.TASKS.href());
+            }
           } else {
             toast.error(result.error ?? "Failed to save task", {
               key: "task-error",

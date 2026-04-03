@@ -4,6 +4,7 @@ import { TaskPriorityBadge } from "../badges/task-priority-badge";
 import { TaskStatusBadge } from "../badges/task-status-badge";
 import { TaskArchive } from "../buttons/task-archive";
 import { TaskEdit } from "../buttons/task-edit";
+import { TaskActions } from "../task-actions";
 import { TaskIcon } from "../task-icon";
 import { TaskDevUtils } from "./task-dev-utils";
 
@@ -24,9 +25,12 @@ export function TaskDetailsHeader({ task }: TaskDetailsHeaderProps) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex hidden items-center gap-2 md:flex">
+        <div className="hidden items-center gap-2 md:flex">
           <TaskEdit taskId={task.id} variant="outline" size="sm" />
           <TaskArchive taskId={task.id} variant="destructive" size="sm" />
+        </div>
+        <div className="flex md:hidden">
+          <TaskActions taskId={task.id} />
         </div>
       </div>
 
