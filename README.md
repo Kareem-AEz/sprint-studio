@@ -73,6 +73,8 @@ We treat empty, error, and zero-data scenarios as first-class citizens in our de
 - **Sonner Context Patch:** We patched the standard Sonner implementation to solve the "ghost timer" problem. By enforcing a singleton state and using ID reconciliation, we prevent UI desync during rapid interactions. It even includes a Unicode-safe hashing algorithm for messages and a custom OKLCH-bordered shake animation for repeated alerts.
     - *Try it in:* The **Tasks View Switcher** or **Activity Filters** to see how repeated clicks intelligently refresh the same toast instead of stacking them.
     
+- **Deterministic Visuals:** We use a custom string-hashing algorithm in `src/lib/colors.ts` to generate consistent avatar colors and theme-aware category palettes. This ensures every user and category has a stable visual identity across the platform without the overhead of persisting extra visual metadata.
+
 - **Structural Breadcrumbs:** Failure states are not dead ends. Every error and not-found view is fully integrated into our breadcrumbs system to provide a clear path back to the parent context.
 
 ---
