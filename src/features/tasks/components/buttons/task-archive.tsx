@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { PATHS } from "@/lib/paths";
+import { cn } from "@/lib/utils";
 import { EMPTY_ACTION_STATE } from "@/response/action-state";
 import { useActionFeedback } from "@/response/hooks/use-action-feedback";
 import { archiveTask } from "../../actions/archive-task";
@@ -33,12 +34,14 @@ interface TaskArchiveProps {
     | "icon-xs"
     | "icon-sm"
     | "icon-lg";
+  className?: string;
 }
 
 export function TaskArchive({
   taskId,
   variant = "destructive",
   size = "sm",
+  className,
 }: TaskArchiveProps) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -61,7 +64,7 @@ export function TaskArchive({
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
       <AlertDialogTrigger asChild>
-        <Button variant={variant} size={size}>
+        <Button variant={variant} size={size} className={cn(className)}>
           <IconArchive className="size-4" />
           Archive Task
         </Button>

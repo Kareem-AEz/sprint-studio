@@ -120,12 +120,12 @@ export function TaskItem({ task }: TaskItemProps) {
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild className="w-full">
-              <TaskEdit taskId={task.id} />
+            <DropdownMenuItem asChild>
+              <TaskEdit taskId={task.id} className="w-full" />
             </DropdownMenuItem>
 
-            <DropdownMenuItem asChild className="w-full">
-              <TaskArchive taskId={task.id} />
+            <DropdownMenuItem asChild>
+              <TaskArchive taskId={task.id} className="w-full" />
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
