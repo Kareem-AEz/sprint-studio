@@ -64,7 +64,7 @@ export function UserAvatar({
       >
         <span
           className={cn(
-            "text-background dark:text-background text-[8px] tracking-tighter uppercase",
+            "text-background dark:text-background text-sm tracking-tighter uppercase",
             textClassName,
           )}
         >

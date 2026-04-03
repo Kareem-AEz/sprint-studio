@@ -63,6 +63,7 @@ export function Header() {
             name={user?.name ?? null}
             isLoading={isLoading}
             className="size-8"
+            textClassName="text-sm"
           />
         }
       </div>

@@ -61,7 +61,13 @@ export function TaskItem({ task }: TaskItemProps) {
         <div className="flex items-center">
           <AvatarGroup>
             {assignees.map((user) => {
-              return <UserAvatar key={user.id} name={user.name} />;
+              return (
+                <UserAvatar
+                  key={user.id}
+                  name={user.name}
+                  textClassName="text-xs"
+                />
+              );
             })}
           </AvatarGroup>
           {hasRemainingAssignees && (
