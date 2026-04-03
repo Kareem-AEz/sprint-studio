@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { startTransition, useActionState } from "react";
+import { useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,8 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { TaskPriority, TaskStatus } from "@/generated/prisma/enums";
 import { useToast } from "@/hooks/use-toast";
 import { PATHS } from "@/lib/paths";
-import { ActionState, EMPTY_ACTION_STATE } from "@/response/action-state";
-import { useActionFeedback } from "@/response/hooks/use-action-feedback";
+import { EMPTY_ACTION_STATE } from "@/response/action-state";
 import { upsertTask } from "../../actions/upsert-task";
 import { TaskFormSchema, taskFormSchema } from "../../schemas";
 import { AssigneeSelect } from "./assignee-select";
@@ -41,6 +40,7 @@ interface TaskFormProps {
 export function TaskForm({ initialData, users, categories }: TaskFormProps) {
   const { toast } = useToast();
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const form = useForm<TaskFormSchema>({
     resolver: zodResolver(taskFormSchema),
     defaultValues: {
@@ -55,34 +55,28 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
     },
   });
 
-  const [actionState, formAction, isPending] = useActionState(
-    (prevState: ActionState, formData: FormData) =>
-      upsertTask(prevState, formData, initialData?.id),
-    EMPTY_ACTION_STATE,
-  );
-
-  useActionFeedback(actionState, {
-    onSuccess: ({ actionState }) => {
-      toast.success(actionState.message ?? "Task saved successfully", {
-        key: "task-saved",
-      });
-      router.push(PATHS.TASKS.href());
-    },
-    onError: ({ actionState }) => {
-      toast.error(actionState.error ?? "Failed to save task", {
-        key: "task-error",
-      });
-    },
-  });
-
   return (
     <form
       action={async (formData) => {
         const isValid = await form.trigger();
         if (!isValid) return;
 
-        startTransition(() => {
-          formAction(formData);
+        startTransition(async () => {
+          const result = await upsertTask(
+            EMPTY_ACTION_STATE,
+            formData,
+            initialData?.id,
+          );
+          if (result.status === "SUCCESS") {
+            toast.success(result.message ?? "Task saved successfully", {
+              key: "task-saved",
+            });
+            router.push(PATHS.TASKS.href());
+          } else {
+            toast.error(result.error ?? "Failed to save task", {
+              key: "task-error",
+            });
+          }
         });
       }}
       className="flex flex-col gap-6"

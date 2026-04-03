@@ -13,6 +13,7 @@ import { activitySearchParams } from "../lib/search-params";
 import { Activity } from "../queries/types";
 import { ActivityAction } from "./activity-action";
 import { ActivityComment } from "./activity-comment";
+import { ActivityEmptyState } from "./activity-empty-state";
 
 interface ActivityContentProps {
   activities: Activity[];
@@ -36,11 +37,7 @@ export function ActivityContent({ activities }: ActivityContentProps) {
   });
 
   if (filteredActivities.length === 0) {
-    return (
-      <div className="text-muted-foreground flex h-32 items-center justify-center text-sm italic">
-        No activity yet.
-      </div>
-    );
+    return <ActivityEmptyState type={type} />;
   }
 
   return (

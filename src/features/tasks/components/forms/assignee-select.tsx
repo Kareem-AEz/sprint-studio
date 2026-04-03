@@ -63,7 +63,11 @@ export function AssigneeSelect({
                     variant="secondary"
                     className="bg-background/50 hover:bg-background/80 flex h-7 items-center gap-1.5 rounded-full border-none py-0 pr-2 pl-1 transition-colors"
                   >
-                    <UserAvatar name={user.name} className="size-5" />
+                    <UserAvatar
+                      name={user.name}
+                      className="size-5"
+                      textClassName="text-[10px]"
+                    />
 
                     <span className="text-xs font-medium">{user.name}</span>
                     <IconCrossSmall
