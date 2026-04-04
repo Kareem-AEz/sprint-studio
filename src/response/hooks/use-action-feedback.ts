@@ -14,11 +14,16 @@ export const useActionFeedback = (
   actionState: ActionState,
   options: UseActionFeedbackOptions,
 ) => {
-  const previousTimestampRef = useRef<number>(actionState.timestamp);
+  const previousTimestampRef = useRef<number>(0);
 
   useEffect(() => {
-    // Only process if actionState has actually changed
-    if (previousTimestampRef.current === actionState.timestamp) return;
+    // Only process if actionState has actually changed and is not the initial state
+    if (
+      actionState.timestamp === 0 ||
+      previousTimestampRef.current === actionState.timestamp
+    ) {
+      return;
+    }
 
     if (actionState.status === "SUCCESS") {
       options.onSuccess?.({

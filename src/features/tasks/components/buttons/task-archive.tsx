@@ -1,9 +1,8 @@
 "use client";
 
 import { IconArchive, IconArchive1 } from "central-icons";
-import { useRouter } from "next/navigation";
-import { useActionState, useState } from "react";
-import { toast } from "sonner";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useRef, useState, useTransition } from "react";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -16,10 +15,10 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { useToast } from "@/hooks/use-toast";
 import { PATHS } from "@/lib/paths";
 import { cn } from "@/lib/utils";
 import { EMPTY_ACTION_STATE } from "@/response/action-state";
-import { useActionFeedback } from "@/response/hooks/use-action-feedback";
 import { archiveTask } from "../../actions/archive-task";
 
 interface TaskArchiveProps {
@@ -44,22 +43,64 @@ export function TaskArchive({
   className,
 }: TaskArchiveProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
-  const [actionState, formAction, isPending] = useActionState(
-    archiveTask.bind(null, taskId),
-    EMPTY_ACTION_STATE,
-  );
+  const [isPending, startTransition] = useTransition();
+  const [isSuccess, setIsSuccess] = useState(false);
 
-  useActionFeedback(actionState, {
-    onSuccess: () => {
-      toast.success("Task archived successfully");
-      setIsOpen(false);
-      router.push(PATHS.TASKS.href());
-    },
-    onError: ({ actionState }) => {
-      toast.error(actionState.message ?? "Failed to archive task");
-    },
-  });
+  const isSuccessRef = useRef(false);
+  const isMountedRef = useRef(true);
+  const successMessageRef = useRef("Task archived successfully");
+
+  // When the task is removed from the DOM (e.g. filtered out after revalidatePath),
+  // this component unmounts. We trigger the toast here so it appears exactly
+  // when the UI updates, creating a seamless experience.
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      if (isSuccessRef.current) {
+        toast.success(successMessageRef.current, {
+          key: "task-archived",
+        });
+      }
+    };
+  }, [toast]);
+
+  const handleArchive = () => {
+    startTransition(async () => {
+      const result = await archiveTask(taskId, EMPTY_ACTION_STATE);
+      if (result.status === "SUCCESS") {
+        if (result.message) successMessageRef.current = result.message;
+        isSuccessRef.current = true;
+        setIsSuccess(true);
+        
+        if (pathname !== PATHS.TASKS.href()) {
+          router.push(PATHS.TASKS.href());
+        }
+
+        // Safety fallback: If the Next.js transition takes too long or fails to unmount
+        // the component, force close the dialog and show the toast anyway after 3 seconds.
+        setTimeout(() => {
+          if (isMountedRef.current && isSuccessRef.current) {
+            setIsOpen(false);
+            setIsSuccess(false);
+            toast.success(successMessageRef.current, {
+              key: "task-archived",
+            });
+            isSuccessRef.current = false; // Prevent double toast on later unmount
+          }
+        }, 3000);
+      } else {
+        toast.error(result.error ?? "Failed to archive task", {
+          key: "task-archive-error",
+        });
+      }
+    });
+  };
+
+  const isWorking = isPending || isSuccess;
 
   return (
     <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -71,7 +112,7 @@ export function TaskArchive({
       </AlertDialogTrigger>
 
       <AlertDialogContent className="mx-auto max-w-xs">
-        <form action={formAction}>
+        <form action={handleArchive}>
           <AlertDialogHeader>
             <AlertDialogTitle>Archive Task</AlertDialogTitle>
             <AlertDialogDescription>
@@ -85,7 +126,7 @@ export function TaskArchive({
                 type="button"
                 variant="outline"
                 size={size}
-                disabled={isPending}
+                disabled={isWorking}
               >
                 Cancel
               </Button>
@@ -95,9 +136,9 @@ export function TaskArchive({
               type="submit"
               variant={variant}
               size={size}
-              disabled={isPending}
+              disabled={isWorking}
             >
-              {isPending ? (
+              {isWorking ? (
                 <>
                   <Spinner className="size-4" />
                   Archiving...

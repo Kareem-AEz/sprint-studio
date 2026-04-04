@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useEffect, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -41,7 +41,27 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
   const { toast } = useToast();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const [isSuccess, setIsSuccess] = useState(false);
   const taskId = initialData?.id ?? undefined;
+
+  const isSuccessRef = useRef(false);
+  const isMountedRef = useRef(true);
+  const successMessageRef = useRef("Task saved successfully");
+
+  // When the form successfully submits and navigates away, this component unmounts.
+  // We trigger the toast here so it appears exactly when the new page renders,
+  // creating a perfectly synchronized experience without any awkward delay.
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      if (isSuccessRef.current) {
+        toast.success(successMessageRef.current, {
+          key: "task-saved",
+        });
+      }
+    };
+  }, [toast]);
 
   useEffect(() => {
     if (taskId) return router.prefetch(PATHS.TASK_DETAILS.href(taskId));
@@ -63,6 +83,8 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
     },
   });
 
+  const isWorking = isPending || isSuccess;
+
   return (
     <form
       action={async (formData) => {
@@ -76,14 +98,27 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
             initialData?.id,
           );
           if (result.status === "SUCCESS") {
-            toast.success(result.message ?? "Task saved successfully", {
-              key: "task-saved",
-            });
+            if (result.message) successMessageRef.current = result.message;
+            isSuccessRef.current = true;
+            setIsSuccess(true);
+
             if (taskId) {
               router.push(PATHS.TASK_DETAILS.href(taskId));
             } else {
               router.push(PATHS.TASKS.href());
             }
+
+            // Safety fallback: If navigation fails or takes too long, 
+            // show the toast anyway after 3 seconds and reset state.
+            setTimeout(() => {
+              if (isMountedRef.current && isSuccessRef.current) {
+                setIsSuccess(false);
+                toast.success(successMessageRef.current, {
+                  key: "task-saved",
+                });
+                isSuccessRef.current = false; // Prevent double toast on later unmount
+              }
+            }, 3000);
           } else {
             toast.error(result.error ?? "Failed to save task", {
               key: "task-error",
@@ -284,8 +319,8 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
       </div>
 
       <div className="flex justify-end gap-3 pt-4">
-        <Button type="submit" disabled={isPending}>
-          {isPending && <Spinner data-icon="inline-start" />}
+        <Button type="submit" disabled={isWorking}>
+          {isWorking && <Spinner data-icon="inline-start" />}
           {initialData?.id ? "Update Task" : "Create Task"}
         </Button>
       </div>

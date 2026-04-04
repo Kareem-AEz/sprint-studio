@@ -13,7 +13,7 @@ export const EMPTY_ACTION_STATE: ActionState<unknown> = {
   data: undefined,
   error: undefined,
   message: undefined,
-  timestamp: Date.now(),
+  timestamp: 0,
 };
 
 export const toErrorActionState = <T = unknown>(error: unknown): ActionState<T> => {
