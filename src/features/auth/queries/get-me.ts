@@ -4,6 +4,7 @@
 
 import { cache } from "react";
 import prisma from "@/lib/prisma";
+import { simulateDelay } from "@/lib/utils";
 
 // IMPORTANT: In a real app, you'd extract user info from the session or request
 // This mock always returns Kareem's user object
@@ -18,7 +19,7 @@ export const getMe = cache(async () => {
     });
 
     // Simulate a delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await simulateDelay();
 
     return user;
   } catch (error) {

@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
+import { simulateDelay } from "@/lib/utils";
 
 export async function getActivitiesById(taskId: string) {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await simulateDelay();
   return await prisma.taskActivity.findMany({
     where: { taskId },
     include: {

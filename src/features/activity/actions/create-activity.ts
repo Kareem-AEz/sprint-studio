@@ -6,6 +6,7 @@ import { getMe } from "@/features/auth/queries/get-me";
 import { TaskActivityType } from "@/generated/prisma/enums";
 import { PATHS } from "@/lib/paths";
 import prisma from "@/lib/prisma";
+import { simulateDelay } from "@/lib/utils";
 import {
   toErrorActionState,
   toSuccessActionState,
@@ -18,10 +19,9 @@ const schema = activityCommentFormSchema.extend({
 
 export async function createActivity(formData: FormData) {
   try {
+    await simulateDelay();
     const user = await getMe();
-    if (!user) {
-      throw new Error("Unauthorized");
-    }
+    if (!user) throw new Error("Unauthorized");
     const rawData = Object.fromEntries(formData.entries());
     const validatedData = schema.safeParse(rawData);
 

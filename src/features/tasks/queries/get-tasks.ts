@@ -1,9 +1,10 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { simulateDelay } from "@/lib/utils";
 
 export async function getTasks() {
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  await simulateDelay();
   return await prisma.task.findMany({
     where: {
       archivedAt: null,

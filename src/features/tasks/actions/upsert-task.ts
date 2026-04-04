@@ -6,6 +6,7 @@ import { Task } from "@/generated/prisma/client";
 import { TaskActivityType } from "@/generated/prisma/enums";
 import { PATHS } from "@/lib/paths";
 import prisma from "@/lib/prisma";
+import { simulateDelay } from "@/lib/utils";
 import {
   ActionState,
   toErrorActionState,
@@ -18,6 +19,7 @@ export const upsertTask = async (
   formData: FormData,
   taskId?: string,
 ): Promise<ActionState<Task>> => {
+  await simulateDelay();
   try {
     const user = await getMe();
     if (!user) throw new Error("Unauthorized");
