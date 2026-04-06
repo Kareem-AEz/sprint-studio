@@ -1,9 +1,10 @@
 import { IconCalender5 } from "central-icons";
 import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 interface TaskDueDateBadgeProps {
-  dueDate: Date | null;
+  dueDate: Date | string | null;
   className?: string;
 }
 
@@ -13,10 +14,7 @@ export function TaskDueDateBadge({
 }: TaskDueDateBadgeProps) {
   if (!dueDate) return null;
 
-  const formattedDate = dueDate.toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
+  const formattedDate = formatDate({ date: dueDate });
 
   return (
     <Badge

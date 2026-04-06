@@ -16,11 +16,13 @@ export function formatDisplayValue(value: string): string {
  * @returns A formatted date string.
  */
 export function formatDate(params: {
-  date: Date | null | undefined;
+  date: Date | string | number | null | undefined;
   mode?: "short" | "long";
 }): string {
   const { date, mode = "short" } = params;
   if (!date) return "--";
+
+  const d = new Date(date);
 
   const options: Intl.DateTimeFormatOptions = {
     month: "short",
@@ -31,7 +33,7 @@ export function formatDate(params: {
     options.year = "numeric";
   }
 
-  return date.toLocaleDateString("en-US", options);
+  return d.toLocaleDateString("en-US", options);
 }
 
 /**
