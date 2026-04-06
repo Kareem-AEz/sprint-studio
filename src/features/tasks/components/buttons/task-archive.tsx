@@ -2,7 +2,7 @@
 
 import { IconArchive, IconArchive1 } from "central-icons";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -16,6 +16,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useToast } from "@/hooks/use-toast";
+import { useUnmountToast } from "@/hooks/use-unmount-toast";
 import { PATHS } from "@/lib/paths";
 import { cn } from "@/lib/utils";
 import { EMPTY_ACTION_STATE } from "@/response/action-state";
@@ -45,53 +46,28 @@ export function TaskArchive({
   const router = useRouter();
   const pathname = usePathname();
   const { toast } = useToast();
+  const triggerToastOnUnmount = useUnmountToast();
+  
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [isSuccess, setIsSuccess] = useState(false);
-
-  const isSuccessRef = useRef(false);
-  const isMountedRef = useRef(true);
-  const successMessageRef = useRef("Task archived successfully");
-
-  // When the task is removed from the DOM (e.g. filtered out after revalidatePath),
-  // this component unmounts. We trigger the toast here so it appears exactly
-  // when the UI updates, creating a seamless experience.
-  useEffect(() => {
-    isMountedRef.current = true;
-    return () => {
-      isMountedRef.current = false;
-      if (isSuccessRef.current) {
-        toast.success(successMessageRef.current, {
-          key: "task-archived",
-        });
-      }
-    };
-  }, [toast]);
 
   const handleArchive = () => {
     startTransition(async () => {
       const result = await archiveTask(taskId, EMPTY_ACTION_STATE);
       if (result.status === "SUCCESS") {
-        if (result.message) successMessageRef.current = result.message;
-        isSuccessRef.current = true;
         setIsSuccess(true);
+        triggerToastOnUnmount(result.message ?? "Task archived successfully", {
+          key: "task-archived",
+          onFallback: () => {
+            setIsOpen(false);
+            setIsSuccess(false);
+          },
+        });
         
         if (pathname !== PATHS.TASKS.href()) {
           router.push(PATHS.TASKS.href());
         }
-
-        // Safety fallback: If the Next.js transition takes too long or fails to unmount
-        // the component, force close the dialog and show the toast anyway after 3 seconds.
-        setTimeout(() => {
-          if (isMountedRef.current && isSuccessRef.current) {
-            setIsOpen(false);
-            setIsSuccess(false);
-            toast.success(successMessageRef.current, {
-              key: "task-archived",
-            });
-            isSuccessRef.current = false; // Prevent double toast on later unmount
-          }
-        }, 3000);
       } else {
         toast.error(result.error ?? "Failed to archive task", {
           key: "task-archive-error",

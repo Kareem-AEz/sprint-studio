@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { updateTag } from "next/cache";
 import z from "zod";
 import { getMe } from "@/features/auth/queries/get-me";
 import { TaskActivityType } from "@/generated/prisma/enums";
@@ -49,28 +49,7 @@ export const archiveTask = async (taskId: string, _prevState: ActionState) => {
       });
     });
 
-    // =========================================================================
-    // EDUCATIONAL NOTE: Cache Invalidation Strategy
-    // =========================================================================
-    //
-    // Previously we used `revalidatePath(..., 'layout')` which was an aggressive 
-    // "nuke" of the entire Client Router Cache for that layout tree:
-    //
-    //   revalidatePath(PATHS.TASK_DETAILS.href(validatedData.data.taskId), "page");
-    //   revalidatePath(PATHS.TASKS.href(), "layout");
-    //
-    // Now, we use `revalidateTag("tasks", { expire: 0 })` alongside `unstable_cache` 
-    // to only purge the specific data queries tagged with "tasks". Next.js 
-    // intelligently figures out which routes consumed that data and purges their 
-    // Client Router Caches automatically, leaving the rest of the layout intact.
-    //
-    // Passing `{ expire: 0 }` instead of a profile like `"max"` guarantees immediate
-    // cache invalidation. If we used `"max"`, Next.js would use "Stale-While-Revalidate",
-    // serving stale data on navigation while fetching fresh data in the background,
-    // causing a race condition where the user has to refresh 2-3 times to see changes!
-    // =========================================================================
-    
-    revalidateTag("tasks", { expire: 0 });
+    updateTag("tasks");
 
     return toSuccessActionState({
       message: "Task archived successfully",
