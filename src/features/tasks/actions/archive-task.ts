@@ -1,9 +1,10 @@
 "use server";
 
-import { updateTag } from "next/cache";
+import { revalidatePath } from "next/cache";
 import z from "zod";
 import { getMe } from "@/features/auth/queries/get-me";
 import { TaskActivityType } from "@/generated/prisma/enums";
+import { PATHS } from "@/lib/paths";
 import prisma from "@/lib/prisma";
 import { simulateDelay } from "@/lib/utils";
 import {
@@ -49,7 +50,7 @@ export const archiveTask = async (taskId: string, _prevState: ActionState) => {
       });
     });
 
-    updateTag("tasks");
+    revalidatePath(PATHS.TASKS.href());
 
     return toSuccessActionState({
       message: "Task archived successfully",

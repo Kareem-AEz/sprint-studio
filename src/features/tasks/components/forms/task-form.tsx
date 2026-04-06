@@ -98,7 +98,7 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
             formData,
             initialData?.id,
           );
-          const newTaskId = result.data?.id ?? null;
+          // const newTaskId = result.data?.id ?? null;
           if (result.status === "SUCCESS") {
             setIsSuccess(true);
             triggerToastOnUnmount(result.message ?? "Task saved successfully", {
@@ -107,8 +107,8 @@ export function TaskForm({ initialData, users, categories }: TaskFormProps) {
               },
             });
 
-            if (newTaskId) {
-              router.push(PATHS.TASK_DETAILS.href(newTaskId));
+            if (taskId) {
+              router.push(PATHS.TASK_DETAILS.href(taskId));
             } else {
               router.push(PATHS.TASKS.href());
             }

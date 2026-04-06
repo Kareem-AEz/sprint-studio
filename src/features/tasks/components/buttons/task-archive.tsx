@@ -47,7 +47,7 @@ export function TaskArchive({
   const pathname = usePathname();
   const { toast } = useToast();
   const triggerToastOnUnmount = useUnmountToast();
-  
+
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [isSuccess, setIsSuccess] = useState(false);
@@ -64,13 +64,16 @@ export function TaskArchive({
             setIsSuccess(false);
           },
         });
-        
+
         if (pathname !== PATHS.TASKS.href()) {
+          // Force the router to completely drop its pre-fetched client cache
+          // before executing the programmatic push to the target route.
+          router.refresh();
           router.push(PATHS.TASKS.href());
         }
       } else {
         toast.error(result.error ?? "Failed to archive task", {
-          key: "task-archive-error",
+          key: `${taskId}-task-archived`,
         });
       }
     });

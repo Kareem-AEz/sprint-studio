@@ -1,6 +1,5 @@
 "use server";
 
-import { updateTag } from "next/cache";
 import { getMe } from "@/features/auth/queries/get-me";
 import { Task } from "@/generated/prisma/client";
 import { TaskActivityType } from "@/generated/prisma/enums";
@@ -157,9 +156,6 @@ export const upsertTask = async (
         },
       });
     }
-
-    // Surgically invalidate and instantly expire the data tagged with 'tasks'
-    updateTag("tasks");
 
     return toSuccessActionState({
       message: taskId
