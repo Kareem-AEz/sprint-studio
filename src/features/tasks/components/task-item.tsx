@@ -26,7 +26,7 @@ export function TaskItem({ task }: TaskItemProps) {
   const hasRemainingAssignees = remainingAssignees > 0;
 
   return (
-    <TableRow className="group relative">
+    <TableRow className="group hover:bg-primary/5 relative">
       {/* Task Icon */}
       <TableCell className="w-14 px-4">
         <TaskIcon taskKey={task.taskKey} />
@@ -37,7 +37,7 @@ export function TaskItem({ task }: TaskItemProps) {
         <div className="flex flex-col">
           <Link
             href={PATHS.TASK_DETAILS.href(task.id)}
-            className="group-hover:text-primary text-sm font-medium transition-colors after:absolute after:inset-0 after:z-[1]"
+            className="group-hover:text-primary text-sm font-medium transition-colors after:absolute after:inset-0 after:z-1"
           >
             {task.title}
           </Link>
