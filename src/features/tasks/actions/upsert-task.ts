@@ -1,5 +1,6 @@
 "use server";
 
+import { updateTag } from "next/cache";
 import { getMe } from "@/features/auth/queries/get-me";
 import { Task } from "@/generated/prisma/client";
 import { TaskActivityType } from "@/generated/prisma/enums";
@@ -172,6 +173,11 @@ export const upsertTask = async (
           },
         },
       });
+    }
+
+    if (taskId) {
+      updateTag(`task-${taskId}`);
+      updateTag(`task-activity-${taskId}`);
     }
 
     return toSuccessActionState({

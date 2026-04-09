@@ -1,7 +1,12 @@
+import { cacheLife, cacheTag } from "next/cache";
 import prisma from "@/lib/prisma";
 import { simulateDelay } from "@/lib/utils";
 
 export async function getActivitiesById(taskId: string) {
+  "use cache";
+  cacheTag(`task-activity-${taskId}`);
+  cacheLife("max");
+
   await simulateDelay();
   return await prisma.taskActivity.findMany({
     where: { taskId },

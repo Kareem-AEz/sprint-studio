@@ -2,6 +2,7 @@
 
 // Mimic "session auth" and always return kareem@example.com's user details
 
+import { cacheLife, cacheTag } from "next/cache";
 import { cache } from "react";
 import prisma from "@/lib/prisma";
 import { simulateDelay } from "@/lib/utils";
@@ -12,6 +13,10 @@ import { simulateDelay } from "@/lib/utils";
 // This function mimics a session-based "get me"
 // This function is cached by react
 export const getMe = cache(async () => {
+  "use cache";
+  cacheTag(`me`);
+  cacheLife("max");
+
   const email = "kareem@example.com";
   try {
     const user = await prisma.user.findUnique({
