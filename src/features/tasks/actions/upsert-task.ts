@@ -22,29 +22,36 @@ export const upsertTask = async (
     const user = await getMe();
     if (!user) throw new Error("Unauthorized");
 
-    const rawData = Object.fromEntries(formData.entries());
-
-    // Handle array for assigneeIds
+    const allAssignees = formData.getAll("assigneeIds");
     let assigneeIds: string[] = [];
-    const rawAssignees = formData.get("assigneeIds");
-    if (rawAssignees) {
+    if (allAssignees.length === 1 && typeof allAssignees[0] === "string") {
       try {
-        assigneeIds = JSON.parse(rawAssignees as string);
+        const parsed = JSON.parse(allAssignees[0]);
+        assigneeIds = Array.isArray(parsed) ? parsed : [allAssignees[0]];
       } catch {
-        assigneeIds = formData.getAll("assigneeIds") as string[];
+        assigneeIds = [allAssignees[0]];
       }
+    } else {
+      assigneeIds = allAssignees.filter((a) => typeof a === "string");
     }
 
-    // Handle dates
     const startDateRaw = formData.get("startDate");
     const dueDateRaw = formData.get("dueDate");
 
-    const validatedData = taskFormSchema.safeParse({
-      ...rawData,
+    const payload = {
+      ...Object.fromEntries(formData.entries()),
       assigneeIds,
-      startDate: startDateRaw ? new Date(startDateRaw as string) : null,
-      dueDate: dueDateRaw ? new Date(dueDateRaw as string) : null,
-    });
+      startDate:
+        startDateRaw && startDateRaw !== "null"
+          ? new Date(startDateRaw as string)
+          : null,
+      dueDate:
+        dueDateRaw && dueDateRaw !== "null"
+          ? new Date(dueDateRaw as string)
+          : null,
+    };
+
+    const validatedData = taskFormSchema.safeParse(payload);
 
     if (!validatedData.success) {
       throw new Error("Invalid data");
@@ -88,7 +95,6 @@ export const upsertTask = async (
       const activitiesToCreate: {
         type: TaskActivityType;
         userId: string;
-        taskId: string;
         oldValue?: string;
         newValue?: string;
       }[] = [];
@@ -97,7 +103,6 @@ export const upsertTask = async (
         activitiesToCreate.push({
           type: TaskActivityType.STATUS_CHANGE,
           userId: user.id,
-          taskId: taskId,
           oldValue: existingTask.status,
           newValue: data.status,
         });
@@ -107,36 +112,48 @@ export const upsertTask = async (
         activitiesToCreate.push({
           type: TaskActivityType.PRIORITY_CHANGE,
           userId: user.id,
-          taskId: taskId,
           oldValue: existingTask.priority,
           newValue: data.priority,
         });
       }
 
-      task = await prisma.$transaction(async (tx) => {
-        const updatedTask = await tx.task.update({
-          where: { id: taskId },
-          data: {
-            ...data,
-            categoryId: finalCategoryId,
-            assignees: {
-              set: finalAssigneeIds.map((id) => ({ id })),
-            },
+      // Perform a single nested write without explicit transaction
+      task = await prisma.task.update({
+        where: { id: taskId },
+        data: {
+          ...data,
+          categoryId: finalCategoryId,
+          assignees: {
+            set: finalAssigneeIds.map((id) => ({ id })),
           },
-        });
-
-        if (activitiesToCreate.length > 0) {
-          await tx.taskActivity.createMany({
-            data: activitiesToCreate,
-          });
-        }
-
-        return updatedTask;
+          ...(activitiesToCreate.length > 0 && {
+            activities: {
+              createMany: {
+                data: activitiesToCreate,
+              },
+            },
+          }),
+        },
       });
     } else {
       // Create
-      const count = await prisma.task.count();
-      const taskKey = `TASK-${count + 1}`;
+      const lastTask = await prisma.task.findFirst({
+        orderBy: { createdAt: "desc" },
+        select: { taskKey: true },
+      });
+
+      let nextNum = 1;
+      if (lastTask && lastTask.taskKey.startsWith("TASK-")) {
+        const lastNum = parseInt(lastTask.taskKey.replace("TASK-", ""), 10);
+        if (!isNaN(lastNum)) {
+          nextNum = lastNum + 1;
+        }
+      } else {
+        const count = await prisma.task.count();
+        nextNum = count + 1;
+      }
+
+      const taskKey = `TASK-${nextNum}`;
 
       task = await prisma.task.create({
         data: {

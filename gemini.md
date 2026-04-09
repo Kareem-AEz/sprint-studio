@@ -46,5 +46,13 @@ Every domain in `src/features/[feature-name]/` must follow this rigid structure:
 - **Verification:** Every change must be verified against the Next.js build and Zod schemas.
 - **No Boilerplate:** Avoid "just-in-case" code. Keep it lean, clean, and highly readable.
 
+## 6. Server Actions & Form Validation (Next.js 16)
+When combining `react-hook-form` and Server Actions, adhere to the following strict pattern to ensure perfect Client/Server validation sync and flawless UX transitions:
+- **Imperative Actions:** Do not pass Server Actions directly to `<form action={action}>` or `useActionState` if the action redirects or destroys the component. Use an inline async function.
+- **Client Validation First:** Always `await form.trigger()` inside the inline action before hitting the server.
+- **The `useTransition` Wrapper:** Wrap the actual Server Action call in `startTransition`. This keeps the UI in a pending state until the server executes *and* the new React Server Component (RSC) payload finishes streaming.
+- **ActionState Pattern:** Pass `EMPTY_ACTION_STATE` as the first argument to Server Actions, and await the returned `ActionState<T>` object (`{ status, message, error, data }`).
+- **Unmount-Sync Toasts:** Never fire `toast.success()` directly after a mutation if the user is navigating away or the component is being removed. Next.js RSC navigations are asynchronous. Use the `useUnmountToast` hook (or an `isSuccess && !isPending` effect interceptor) to queue the toast so it fires in perfect synchronization with the physical DOM unmount.
+
 ---
 **Standard:** Build it for scale. Build it for beauty.
