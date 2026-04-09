@@ -37,7 +37,7 @@ export function TaskItem({ task }: TaskItemProps) {
         <div className="flex flex-col">
           <Link
             href={PATHS.TASK_DETAILS.href(task.id)}
-            className="group-hover:text-primary text-sm font-medium transition-colors after:absolute after:inset-0"
+            className="group-hover:text-primary text-sm font-medium transition-colors after:absolute after:inset-0 after:z-[1]"
           >
             {task.title}
           </Link>
